@@ -11,6 +11,7 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -25,8 +26,8 @@ public class MoneyManager extends javax.swing.JFrame {
      * Creates new form MoneyManager
      */
     public MoneyManager() {
-
         initComponents();
+        setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
 
         UtilDateModel model = new UtilDateModel();

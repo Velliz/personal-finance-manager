@@ -13,11 +13,13 @@ import de.javasoft.plaf.synthetica.SyntheticaMauveMetallicLookAndFeel;
 import de.javasoft.plaf.synthetica.SyntheticaSilverMoonLookAndFeel;
 import de.javasoft.plaf.synthetica.SyntheticaSkyMetallicLookAndFeel;
 import de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel;
+import edu.maranatha.pbol.util.Cache;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.ImageIcon;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -27,13 +29,44 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Settings extends javax.swing.JFrame {
 
     private MoneyManager parrent = new MoneyManager();
-    
+
     /**
      * Creates new form Settings
      */
     public Settings() {
         initComponents();
+        setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
+
+        switch (Cache.themePos) {
+            case 1:
+                jRadioButton1.setSelected(true);
+                break;
+            case 2:
+                jRadioButton2.setSelected(true);
+                break;
+            case 3:
+                jRadioButton3.setSelected(true);
+                break;
+            case 4:
+                jRadioButton4.setSelected(true);
+                break;
+            case 5:
+                jRadioButton5.setSelected(true);
+                break;
+            case 6:
+                jRadioButton6.setSelected(true);
+                break;
+            case 7:
+                jRadioButton7.setSelected(true);
+                break;
+            case 8:
+                jRadioButton8.setSelected(true);
+                break;
+            default:
+                jRadioButton1.setSelected(true);
+                break;
+        }
     }
 
     /**
@@ -203,6 +236,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 1;
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
@@ -213,6 +247,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 2;
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
@@ -223,6 +258,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 3;
     }//GEN-LAST:event_jRadioButton3ActionPerformed
 
     private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
@@ -233,6 +269,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 4;
     }//GEN-LAST:event_jRadioButton4ActionPerformed
 
     private void jRadioButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton5ActionPerformed
@@ -243,6 +280,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 5;
     }//GEN-LAST:event_jRadioButton5ActionPerformed
 
     private void jRadioButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton6ActionPerformed
@@ -253,6 +291,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 6;
     }//GEN-LAST:event_jRadioButton6ActionPerformed
 
     private void jRadioButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton7ActionPerformed
@@ -263,6 +302,7 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 7;
     }//GEN-LAST:event_jRadioButton7ActionPerformed
 
     private void jRadioButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton8ActionPerformed
@@ -273,10 +313,11 @@ public class Settings extends javax.swing.JFrame {
         }
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(parrent);
+        Cache.themePos = 8;
     }//GEN-LAST:event_jRadioButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                this.dispose();
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

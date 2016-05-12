@@ -7,6 +7,7 @@ package edu.maranatha.pbol.view;
 
 import edu.maranatha.pbol.util.Validation;
 import java.awt.event.WindowEvent;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -19,6 +20,7 @@ public class Registrasi extends javax.swing.JFrame {
      */
     public Registrasi() {
         initComponents();
+        setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
     }
 
