@@ -7,10 +7,15 @@ package edu.maranatha.pbol.view;
 
 import de.javasoft.plaf.synthetica.SyntheticaSilverMoonLookAndFeel;
 import edu.maranatha.pbol.util.Validation;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -18,14 +23,19 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author didit
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame implements ActionListener {
+
+    private Timer time = new Timer(1000, this);
 
     /**
      * Creates new form Login
      */
     public Login() {
+        setDefaultLookAndFeelDecorated(true);
+        setIconImage(new ImageIcon("money.png").getImage());
         initComponents();
         setLocationRelativeTo(null);
+        time.start();
     }
 
     /**
@@ -45,6 +55,7 @@ public class Login extends javax.swing.JFrame {
         DoLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         DoDaftar = new javax.swing.JButton();
+        dates = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Login - Manager Pengeluaran Personal v1.0 Beta");
@@ -96,7 +107,9 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(password)))
                 .addContainerGap(126, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(dates)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -116,11 +129,16 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(DoLogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(DoDaftar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(DoLogin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(DoDaftar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(dates)))
                 .addContainerGap())
         );
 
@@ -210,6 +228,7 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton DoDaftar;
     private javax.swing.JButton DoLogin;
+    private javax.swing.JLabel dates;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -217,4 +236,13 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField password;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Calendar now = Calendar.getInstance();
+        int h = now.get(Calendar.HOUR_OF_DAY);
+        int m = now.get(Calendar.MINUTE);
+        int s = now.get(Calendar.SECOND);
+        dates.setText(h + ":" + m + ":" + s);
+    }
 }

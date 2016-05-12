@@ -5,8 +5,15 @@
  */
 package edu.maranatha.pbol.view;
 
+import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
+import java.util.Properties;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /**
  *
@@ -18,8 +25,39 @@ public class MoneyManager extends javax.swing.JFrame {
      * Creates new form MoneyManager
      */
     public MoneyManager() {
+
         initComponents();
         setLocationRelativeTo(null);
+
+        UtilDateModel model = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        panelDatePickerPengeluaran.setLayout(new CardLayout());
+        panelDatePickerPengeluaran.add(datePicker);
+
+        UtilDateModel model2 = new UtilDateModel();
+        Properties p2 = new Properties();
+        p2.put("text.today", "Today");
+        p2.put("text.month", "Month");
+        p2.put("text.year", "Year");
+        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
+        JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        panelDatePickerPemasukan.setLayout(new CardLayout());
+        panelDatePickerPemasukan.add(datePicker2);
+
+        UtilDateModel model3 = new UtilDateModel();
+        Properties p3 = new Properties();
+        p3.put("text.today", "Today");
+        p3.put("text.month", "Month");
+        p3.put("text.year", "Year");
+        JDatePanelImpl datePanel3 = new JDatePanelImpl(model3, p3);
+        JDatePickerImpl datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
+        panelDatePickerAgenda.setLayout(new CardLayout());
+        panelDatePickerAgenda.add(datePicker3);
     }
 
     /**
@@ -39,7 +77,7 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        panelDatePickerPengeluaran = new javax.swing.JPanel();
         jFormattedTextField2 = new javax.swing.JFormattedTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -53,12 +91,12 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jFormattedTextField3 = new javax.swing.JFormattedTextField();
         jFormattedTextField4 = new javax.swing.JFormattedTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        panelDatePickerPemasukan = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
@@ -66,7 +104,6 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jFormattedTextField5 = new javax.swing.JFormattedTextField();
         jFormattedTextField6 = new javax.swing.JFormattedTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
@@ -74,6 +111,7 @@ public class MoneyManager extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox();
+        panelDatePickerAgenda = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -99,6 +137,20 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jLabel4.setText("Status");
 
+        panelDatePickerPengeluaran.setBackground(new java.awt.Color(255, 255, 0));
+        panelDatePickerPengeluaran.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout panelDatePickerPengeluaranLayout = new javax.swing.GroupLayout(panelDatePickerPengeluaran);
+        panelDatePickerPengeluaran.setLayout(panelDatePickerPengeluaranLayout);
+        panelDatePickerPengeluaranLayout.setHorizontalGroup(
+            panelDatePickerPengeluaranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelDatePickerPengeluaranLayout.setVerticalGroup(
+            panelDatePickerPengeluaranLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 23, Short.MAX_VALUE)
+        );
+
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
@@ -110,6 +162,11 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jButton2.setText("Reset");
         jButton2.setOpaque(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -124,27 +181,27 @@ public class MoneyManager extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField1)
                     .addComponent(jFormattedTextField2)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -157,15 +214,12 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -181,7 +235,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,6 +266,19 @@ public class MoneyManager extends javax.swing.JFrame {
         jButton4.setText("Reset");
         jButton4.setOpaque(false);
 
+        panelDatePickerPemasukan.setBackground(new java.awt.Color(255, 255, 0));
+
+        javax.swing.GroupLayout panelDatePickerPemasukanLayout = new javax.swing.GroupLayout(panelDatePickerPemasukan);
+        panelDatePickerPemasukan.setLayout(panelDatePickerPemasukanLayout);
+        panelDatePickerPemasukanLayout.setHorizontalGroup(
+            panelDatePickerPemasukanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelDatePickerPemasukanLayout.setVerticalGroup(
+            panelDatePickerPemasukanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 23, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -228,18 +295,18 @@ public class MoneyManager extends javax.swing.JFrame {
                         .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                     .addComponent(jFormattedTextField4)
-                    .addComponent(jScrollPane3))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -249,18 +316,15 @@ public class MoneyManager extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -311,6 +375,19 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        panelDatePickerAgenda.setBackground(new java.awt.Color(255, 255, 0));
+
+        javax.swing.GroupLayout panelDatePickerAgendaLayout = new javax.swing.GroupLayout(panelDatePickerAgenda);
+        panelDatePickerAgenda.setLayout(panelDatePickerAgendaLayout);
+        panelDatePickerAgendaLayout.setHorizontalGroup(
+            panelDatePickerAgendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelDatePickerAgendaLayout.setVerticalGroup(
+            panelDatePickerAgendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 23, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -328,19 +405,19 @@ public class MoneyManager extends javax.swing.JFrame {
                         .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                     .addComponent(jFormattedTextField6)
-                    .addComponent(jScrollPane5)
-                    .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelDatePickerAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
-                    .addComponent(jFormattedTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelDatePickerAgenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -357,15 +434,12 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton5)
                     .addComponent(jButton6))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -492,6 +566,10 @@ public class MoneyManager extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_TemaActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     @Override
     protected void processWindowEvent(final WindowEvent e) {
         super.processWindowEvent(e);
@@ -512,11 +590,8 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox4;
-    private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JFormattedTextField jFormattedTextField2;
-    private javax.swing.JFormattedTextField jFormattedTextField3;
     private javax.swing.JFormattedTextField jFormattedTextField4;
-    private javax.swing.JFormattedTextField jFormattedTextField5;
     private javax.swing.JFormattedTextField jFormattedTextField6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -556,5 +631,8 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JPanel panelDatePickerAgenda;
+    private javax.swing.JPanel panelDatePickerPemasukan;
+    private javax.swing.JPanel panelDatePickerPengeluaran;
     // End of variables declaration//GEN-END:variables
 }

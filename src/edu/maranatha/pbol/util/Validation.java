@@ -6,7 +6,6 @@
 package edu.maranatha.pbol.util;
 
 import java.awt.Component;
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
