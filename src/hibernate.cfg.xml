@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/moneymanager</property>
+    <property name="hibernate.connection.username">root</property>
+    <mapping resource="edu/maranatha/pbol/model/pojo/Pengeluaran.hbm.xml"/>
+    <mapping resource="edu/maranatha/pbol/model/pojo/Pemasukan.hbm.xml"/>
+    <mapping resource="edu/maranatha/pbol/model/pojo/User.hbm.xml"/>
+    <mapping resource="edu/maranatha/pbol/model/pojo/Agenda.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

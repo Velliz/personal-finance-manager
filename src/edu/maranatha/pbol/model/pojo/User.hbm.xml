@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated May 12, 2016 9:02:47 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="edu.maranatha.pbol.model.pojo.User" table="user" catalog="moneymanager">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="username" type="string">
+            <column name="username" length="100" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="100" not-null="true" />
+        </property>
+        <property name="nama" type="string">
+            <column name="nama" length="100" not-null="true" />
+        </property>
+        <property name="alamat" type="string">
+            <column name="alamat" length="65535" not-null="true" />
+        </property>
+        <property name="nohp" type="string">
+            <column name="nohp" length="20" not-null="true" />
+        </property>
+        <property name="jeniskelamin" type="string">
+            <column name="jeniskelamin" length="30" not-null="true" />
+        </property>
+        <set name="agendas" table="agenda" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="iduser" not-null="true" />
+            </key>
+            <one-to-many class="edu.maranatha.pbol.model.pojo.Agenda" />
+        </set>
+        <set name="pengeluarans" table="pengeluaran" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="iduser" not-null="true" />
+            </key>
+            <one-to-many class="edu.maranatha.pbol.model.pojo.Pengeluaran" />
+        </set>
+        <set name="pemasukans" table="pemasukan" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="iduser" not-null="true" />
+            </key>
+            <one-to-many class="edu.maranatha.pbol.model.pojo.Pemasukan" />
+        </set>
+    </class>
+</hibernate-mapping>

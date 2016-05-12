@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/conventional/DataConfig.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/conventional/MysqliConnector.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/conventional/DataModel.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/hibernate.cfg.xml</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/presistence/HibernateUtil.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/hibernate.reveng.xml</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/view/MoneyManager.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/view/Login.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/view/Registrasi.java</file>
+            <file>file:/D:/Java/Money%20Manager/src/edu/maranatha/pbol/util/Validation.java</file>
+        </group>
+    </open-files>
+</project-private>
