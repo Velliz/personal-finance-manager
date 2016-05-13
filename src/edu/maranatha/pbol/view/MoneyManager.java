@@ -358,7 +358,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Pemasukan", jPanel3);
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Pemasukan"));
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Agenda"));
 
         jLabel9.setText("Tanggal Pengeluaran");
 
