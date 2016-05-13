@@ -11,7 +11,9 @@ package edu.maranatha.pbol.util;
  */
 public class Cache {
     
-    public static int themePos = 1; 
+    public static int themePos = 1;
+    public static String username = null;
+    public static String password = null;
 
 }
 
