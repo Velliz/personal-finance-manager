@@ -95,6 +95,11 @@ public class Registrasi extends javax.swing.JFrame {
         registrasiPassword.setText("jPasswordField1");
 
         jButton2.setText("Reset");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Kembali");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -240,6 +245,17 @@ public class Registrasi extends javax.swing.JFrame {
             transaction.commit();
         }
     }//GEN-LAST:event_registrasiDaftarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        registrasiNama.setText("");
+        registrasiAlamat.setText("");
+        registrasiHp.setText("");
+        perempuan.setSelected(false);
+        lakilaki.setSelected(true);
+        registrasiUsername.setText("");
+        registrasiPassword.setText("");
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     @Override
     protected void processWindowEvent(final WindowEvent e) {
