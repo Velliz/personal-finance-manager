@@ -203,8 +203,12 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="grupKelamin"/>
             </Property>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Laki-Laki"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lakilakiActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="perempuan">
           <Properties>
@@ -242,9 +246,6 @@
         <Component class="javax.swing.JTextField" name="registrasiUsername">
         </Component>
         <Component class="javax.swing.JPasswordField" name="registrasiPassword">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jPasswordField1"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
           <Properties>

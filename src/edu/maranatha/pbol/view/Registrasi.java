@@ -10,6 +10,7 @@ import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -79,7 +80,13 @@ public class Registrasi extends javax.swing.JFrame {
         });
 
         grupKelamin.add(lakilaki);
+        lakilaki.setSelected(true);
         lakilaki.setText("Laki-Laki");
+        lakilaki.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lakilakiActionPerformed(evt);
+            }
+        });
 
         grupKelamin.add(perempuan);
         perempuan.setText("Perempuan");
@@ -91,8 +98,6 @@ public class Registrasi extends javax.swing.JFrame {
         jLabel5.setText("Username");
 
         jLabel6.setText("Password");
-
-        registrasiPassword.setText("jPasswordField1");
 
         jButton2.setText("Reset");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -243,6 +248,18 @@ public class Registrasi extends javax.swing.JFrame {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
             transaction.commit();
+
+            int result = Validation.infoDialouge(this, "Akun baru telah dibuat");
+            if (result == JOptionPane.YES_OPTION) {
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new Login().setVisible(true);
+                    }
+                });
+
+                this.dispose();
+            }
+
         }
     }//GEN-LAST:event_registrasiDaftarActionPerformed
 
@@ -256,6 +273,10 @@ public class Registrasi extends javax.swing.JFrame {
         registrasiUsername.setText("");
         registrasiPassword.setText("");
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void lakilakiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lakilakiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lakilakiActionPerformed
 
     @Override
     protected void processWindowEvent(final WindowEvent e) {

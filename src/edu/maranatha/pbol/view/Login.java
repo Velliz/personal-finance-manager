@@ -6,18 +6,25 @@
 package edu.maranatha.pbol.view;
 
 import de.javasoft.plaf.synthetica.SyntheticaSilverMoonLookAndFeel;
+import edu.maranatha.pbol.model.pojo.User;
+import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -171,12 +178,23 @@ public class Login extends javax.swing.JFrame implements ActionListener {
         String pwd = password.getText();
 
         if (Validation.Validate(uname, pwd)) {
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new MoneyManager().setVisible(true);
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            List<User> data = session.createQuery("from User").list();
+            for (User user : data) {
+                System.out.println(user.getNama());
+
+                if (user.getUsername().equals(uname) && user.getPassword().equals(pwd)) {
+                    java.awt.EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            new MoneyManager().setVisible(true);
+                        }
+                    });
+                    this.dispose();
+                    return;
                 }
-            });
-            this.dispose();
+            }
+            Validation.infoDialouge(this,"Login Invalid , Username / Password Wrong");
         }
     }//GEN-LAST:event_DoLoginActionPerformed
 
