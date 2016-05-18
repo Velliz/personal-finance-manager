@@ -1,2 +1,7 @@
 /build/
 /dist/
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+.nb-gradle/
