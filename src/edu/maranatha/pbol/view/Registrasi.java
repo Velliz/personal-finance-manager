@@ -5,9 +5,13 @@
  */
 package edu.maranatha.pbol.view;
 
+import edu.maranatha.pbol.model.pojo.User;
+import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -216,14 +220,24 @@ public class Registrasi extends javax.swing.JFrame {
         String nama = registrasiNama.getText();
         String alamat = registrasiAlamat.getText();
         String nohp = registrasiHp.getText();
-        String jenisKelamin = grupKelamin.getSelection().toString();
+
+        String jenisKelamin = null;
+        if (perempuan.isSelected()) {
+            jenisKelamin = "Wanita";
+        } else if (lakilaki.isSelected()) {
+            jenisKelamin = "Pria";
+        }
+
         String uname = registrasiUsername.getText();
         String pwd = registrasiPassword.getText();
 
-        System.out.println(jenisKelamin);
-        
-        if (Validation.Validate(uname, pwd)) {
+        if (Validation.Validate(nama, alamat, nohp, jenisKelamin, uname, pwd)) {
+            User baru = new User(uname, pwd, nama, alamat, nohp, jenisKelamin);
 
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(baru);
+            transaction.commit();
         }
     }//GEN-LAST:event_registrasiDaftarActionPerformed
 
