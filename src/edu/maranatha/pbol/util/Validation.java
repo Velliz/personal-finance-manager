@@ -68,4 +68,10 @@ public class Validation {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void Logger(Object... values) {
+        for (Object value : values) {
+            System.out.println(value.toString());
+        }
+    }
+
 }

@@ -5,13 +5,28 @@
  */
 package edu.maranatha.pbol.view;
 
+import edu.maranatha.pbol.controller.AgendaTableController;
+import edu.maranatha.pbol.model.pojo.Agenda;
+import edu.maranatha.pbol.model.pojo.Pemasukan;
+import edu.maranatha.pbol.model.pojo.Pengeluaran;
+import edu.maranatha.pbol.model.pojo.User;
+import edu.maranatha.pbol.presistence.HibernateUtil;
+import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -21,6 +36,9 @@ import org.jdatepicker.impl.UtilDateModel;
  * @author didit
  */
 public class MoneyManager extends javax.swing.JFrame {
+
+    private JDatePickerImpl datePicker, datePicker2, datePicker3;
+    private AgendaTableController dtmAgenda;
 
     /**
      * Creates new form MoneyManager
@@ -36,7 +54,7 @@ public class MoneyManager extends javax.swing.JFrame {
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         panelDatePickerPengeluaran.setLayout(new CardLayout());
         panelDatePickerPengeluaran.add(datePicker);
 
@@ -46,7 +64,7 @@ public class MoneyManager extends javax.swing.JFrame {
         p2.put("text.month", "Month");
         p2.put("text.year", "Year");
         JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
-        JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         panelDatePickerPemasukan.setLayout(new CardLayout());
         panelDatePickerPemasukan.add(datePicker2);
 
@@ -56,9 +74,14 @@ public class MoneyManager extends javax.swing.JFrame {
         p3.put("text.month", "Month");
         p3.put("text.year", "Year");
         JDatePanelImpl datePanel3 = new JDatePanelImpl(model3, p3);
-        JDatePickerImpl datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
+        datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
         panelDatePickerAgenda.setLayout(new CardLayout());
         panelDatePickerAgenda.add(datePicker3);
+        
+        dtmAgenda = new AgendaTableController();
+        jTable1.setModel(dtmAgenda);
+        dtmAgenda.add("asdf");
+       
     }
 
     /**
@@ -79,12 +102,12 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         panelDatePickerPengeluaran = new javax.swing.JPanel();
-        jFormattedTextField2 = new javax.swing.JFormattedTextField();
+        pengeluaranNominal = new javax.swing.JFormattedTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jComboBox1 = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        pengeluaranKeterangan = new javax.swing.JTextArea();
+        pengeluaranJenis = new javax.swing.JComboBox();
+        DoSavePengeluaran = new javax.swing.JButton();
+        DoResetPengeluaran = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -92,11 +115,11 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jFormattedTextField4 = new javax.swing.JFormattedTextField();
+        pemasukanNominal = new javax.swing.JFormattedTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        pemasukanKeterangan = new javax.swing.JTextArea();
+        DoSimpanPemasukan = new javax.swing.JButton();
+        DoResetPemasukan = new javax.swing.JButton();
         panelDatePickerPemasukan = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -105,13 +128,13 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jFormattedTextField6 = new javax.swing.JFormattedTextField();
+        agendaNominal = new javax.swing.JFormattedTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        agendaKeterangan = new javax.swing.JTextArea();
+        DoSimpanAgenda = new javax.swing.JButton();
+        DoResetAgenda = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox();
+        agendaOtoritas = new javax.swing.JComboBox();
         panelDatePickerAgenda = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -136,7 +159,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jLabel3.setText("Keterangan");
 
-        jLabel4.setText("Status");
+        jLabel4.setText("Jenis");
 
         panelDatePickerPengeluaran.setBackground(new java.awt.Color(255, 255, 0));
         panelDatePickerPengeluaran.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -152,22 +175,27 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGap(0, 23, Short.MAX_VALUE)
         );
 
-        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        pengeluaranNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        pengeluaranKeterangan.setColumns(20);
+        pengeluaranKeterangan.setRows(5);
+        jScrollPane1.setViewportView(pengeluaranKeterangan);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        pengeluaranJenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tersier", "Sekunder", "Primer", "Darurat" }));
 
-        jButton1.setText("Simpan");
-        jButton1.setOpaque(false);
-
-        jButton2.setText("Reset");
-        jButton2.setOpaque(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        DoSavePengeluaran.setText("Simpan");
+        DoSavePengeluaran.setOpaque(false);
+        DoSavePengeluaran.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                DoSavePengeluaranActionPerformed(evt);
+            }
+        });
+
+        DoResetPengeluaran.setText("Reset");
+        DoResetPengeluaran.setOpaque(false);
+        DoResetPengeluaran.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoResetPengeluaranActionPerformed(evt);
             }
         });
 
@@ -185,12 +213,12 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DoSavePengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField2)
+                        .addComponent(DoResetPengeluaran, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pengeluaranNominal)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pengeluaranJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -204,19 +232,19 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pengeluaranNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pengeluaranJenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(DoSavePengeluaran)
+                    .addComponent(DoResetPengeluaran))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
@@ -259,17 +287,27 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jLabel7.setText("Keterangan");
 
-        jFormattedTextField4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        pemasukanNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        pemasukanKeterangan.setColumns(20);
+        pemasukanKeterangan.setRows(5);
+        jScrollPane3.setViewportView(pemasukanKeterangan);
 
-        jButton3.setText("Simpan");
-        jButton3.setOpaque(false);
+        DoSimpanPemasukan.setText("Simpan");
+        DoSimpanPemasukan.setOpaque(false);
+        DoSimpanPemasukan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoSimpanPemasukanActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Reset");
-        jButton4.setOpaque(false);
+        DoResetPemasukan.setText("Reset");
+        DoResetPemasukan.setOpaque(false);
+        DoResetPemasukan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoResetPemasukanActionPerformed(evt);
+            }
+        });
 
         panelDatePickerPemasukan.setBackground(new java.awt.Color(255, 255, 0));
 
@@ -297,10 +335,10 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DoSimpanPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField4)
+                        .addComponent(DoResetPemasukan, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pemasukanNominal)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                     .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -315,15 +353,15 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pemasukanNominal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(DoSimpanPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DoResetPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(85, Short.MAX_VALUE))
         );
 
@@ -366,21 +404,31 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jLabel11.setText("Keterangan");
 
-        jFormattedTextField6.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        agendaNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane5.setViewportView(jTextArea3);
+        agendaKeterangan.setColumns(20);
+        agendaKeterangan.setRows(5);
+        jScrollPane5.setViewportView(agendaKeterangan);
 
-        jButton5.setText("Simpan");
-        jButton5.setOpaque(false);
+        DoSimpanAgenda.setText("Simpan");
+        DoSimpanAgenda.setOpaque(false);
+        DoSimpanAgenda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoSimpanAgendaActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("Reset");
-        jButton6.setOpaque(false);
+        DoResetAgenda.setText("Reset");
+        DoResetAgenda.setOpaque(false);
+        DoResetAgenda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DoResetAgendaActionPerformed(evt);
+            }
+        });
 
         jLabel12.setText("Otoritas");
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        agendaOtoritas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak Penting", "Penting" }));
 
         panelDatePickerAgenda.setBackground(new java.awt.Color(255, 255, 0));
 
@@ -409,12 +457,12 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DoSimpanAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jFormattedTextField6)
+                        .addComponent(DoResetAgenda, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(agendaNominal)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(agendaOtoritas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelDatePickerAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -428,19 +476,19 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jFormattedTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(agendaNominal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(agendaOtoritas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
+                    .addComponent(DoSimpanAgenda)
+                    .addComponent(DoResetAgenda))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
@@ -573,9 +621,92 @@ public class MoneyManager extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_TemaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void DoResetPengeluaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetPengeluaranActionPerformed
+        datePicker.getModel().setValue(null);
+        pengeluaranNominal.setText("");
+        pengeluaranKeterangan.setText("");
+        pengeluaranJenis.setSelectedIndex(0);
+    }//GEN-LAST:event_DoResetPengeluaranActionPerformed
+
+    private void DoSavePengeluaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSavePengeluaranActionPerformed
+        String datePattern = "dd MMMM yyyy";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+        String tanggal = dateFormatter.format(datePicker.getModel().getValue());
+        int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
+        String keterangan = pengeluaranKeterangan.getText();
+        String status = pengeluaranJenis.getModel().getSelectedItem().toString();
+
+        if (Validation.Validate(tanggal, nominal, keterangan, status)) {
+            Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(baru);
+            transaction.commit();
+
+            dtmAgenda.add(keterangan);
+            
+            Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
+        }
+    }//GEN-LAST:event_DoSavePengeluaranActionPerformed
+
+    private void DoResetPemasukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetPemasukanActionPerformed
+        datePicker2.getModel().setValue(null);
+        pemasukanNominal.setText("");
+        pemasukanKeterangan.setText("");
+    }//GEN-LAST:event_DoResetPemasukanActionPerformed
+
+    private void DoSimpanPemasukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSimpanPemasukanActionPerformed
+        String datePattern = "dd MMMM yyyy";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+        String tanggal = dateFormatter.format(datePicker2.getModel().getValue());
+        int nominal = Integer.parseInt(pemasukanNominal.getText().replace(",", ""));
+        String keterangan = pemasukanKeterangan.getText();
+
+        if (Validation.Validate(tanggal, nominal, keterangan)) {
+            Pemasukan baru = new Pemasukan(Cache.user, nominal, (Date) datePicker2.getModel().getValue(), keterangan);
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(baru);
+            transaction.commit();
+
+            Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
+        }
+    }//GEN-LAST:event_DoSimpanPemasukanActionPerformed
+
+    private void DoSimpanAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSimpanAgendaActionPerformed
+        String datePattern = "dd MMMM yyyy";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+        String tanggal = dateFormatter.format(datePicker3.getModel().getValue());
+        int nominal = Integer.parseInt(agendaNominal.getText().replace(",", ""));
+        String keterangan = agendaKeterangan.getText();
+        String otoritas = agendaOtoritas.getModel().getSelectedItem().toString();
+
+        boolean authority = false;
+        if(otoritas.equals("Penting"))
+            authority = true;
+
+        if (Validation.Validate(tanggal, nominal, keterangan, otoritas)) {
+
+            Agenda baru = new Agenda(Cache.user, nominal, (Date) datePicker3.getModel().getValue(), keterangan, authority);
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(baru);
+            transaction.commit();
+
+            Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
+        }
+
+    }//GEN-LAST:event_DoSimpanAgendaActionPerformed
+
+    private void DoResetAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetAgendaActionPerformed
+        datePicker3.getModel().setValue(null);
+        agendaNominal.setText("");
+        agendaKeterangan.setText("");
+        agendaOtoritas.setSelectedIndex(0);
+    }//GEN-LAST:event_DoResetAgendaActionPerformed
 
     @Override
     protected void processWindowEvent(final WindowEvent e) {
@@ -588,18 +719,16 @@ public class MoneyManager extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton DoResetAgenda;
+    private javax.swing.JButton DoResetPemasukan;
+    private javax.swing.JButton DoResetPengeluaran;
+    private javax.swing.JButton DoSavePengeluaran;
+    private javax.swing.JButton DoSimpanAgenda;
+    private javax.swing.JButton DoSimpanPemasukan;
     private javax.swing.JMenuItem Tema;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox4;
-    private javax.swing.JFormattedTextField jFormattedTextField2;
-    private javax.swing.JFormattedTextField jFormattedTextField4;
-    private javax.swing.JFormattedTextField jFormattedTextField6;
+    private javax.swing.JTextArea agendaKeterangan;
+    private javax.swing.JFormattedTextField agendaNominal;
+    private javax.swing.JComboBox agendaOtoritas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -635,11 +764,13 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
     private javax.swing.JPanel panelDatePickerAgenda;
     private javax.swing.JPanel panelDatePickerPemasukan;
     private javax.swing.JPanel panelDatePickerPengeluaran;
+    private javax.swing.JTextArea pemasukanKeterangan;
+    private javax.swing.JFormattedTextField pemasukanNominal;
+    private javax.swing.JComboBox pengeluaranJenis;
+    private javax.swing.JTextArea pengeluaranKeterangan;
+    private javax.swing.JFormattedTextField pengeluaranNominal;
     // End of variables declaration//GEN-END:variables
 }

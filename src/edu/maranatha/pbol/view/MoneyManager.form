@@ -186,13 +186,13 @@
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jButton1" max="32767" attributes="0"/>
+                                      <Component id="DoSavePengeluaran" max="32767" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jButton2" min="-2" pref="82" max="-2" attributes="0"/>
+                                      <Component id="DoResetPengeluaran" min="-2" pref="82" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jFormattedTextField2" max="32767" attributes="0"/>
+                                  <Component id="pengeluaranNominal" max="32767" attributes="0"/>
                                   <Component id="jScrollPane1" alignment="0" pref="189" max="32767" attributes="0"/>
-                                  <Component id="jComboBox1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="pengeluaranJenis" alignment="0" max="32767" attributes="0"/>
                                   <Component id="panelDatePickerPengeluaran" alignment="0" pref="189" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -210,7 +210,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jFormattedTextField2" min="-2" pref="20" max="-2" attributes="0"/>
+                                  <Component id="pengeluaranNominal" min="-2" pref="20" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -219,13 +219,13 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="pengeluaranJenis" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DoSavePengeluaran" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DoResetPengeluaran" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="59" max="32767" attributes="0"/>
                           </Group>
@@ -250,7 +250,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel4">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Status"/>
+                        <Property name="text" type="java.lang.String" value="Jenis"/>
                       </Properties>
                     </Component>
                     <Container class="javax.swing.JPanel" name="panelDatePickerPengeluaran">
@@ -276,7 +276,7 @@
                         </DimensionLayout>
                       </Layout>
                     </Container>
-                    <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField2">
+                    <Component class="javax.swing.JFormattedTextField" name="pengeluaranNominal">
                       <Properties>
                         <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                           <Format subtype="1" type="0"/>
@@ -290,7 +290,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JTextArea" name="jTextArea1">
+                        <Component class="javax.swing.JTextArea" name="pengeluaranKeterangan">
                           <Properties>
                             <Property name="columns" type="int" value="20"/>
                             <Property name="rows" type="int" value="5"/>
@@ -298,31 +298,34 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JComboBox" name="jComboBox1">
+                    <Component class="javax.swing.JComboBox" name="pengeluaranJenis">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="4">
-                            <StringItem index="0" value="Item 1"/>
-                            <StringItem index="1" value="Item 2"/>
-                            <StringItem index="2" value="Item 3"/>
-                            <StringItem index="3" value="Item 4"/>
+                            <StringItem index="0" value="Tersier"/>
+                            <StringItem index="1" value="Sekunder"/>
+                            <StringItem index="2" value="Primer"/>
+                            <StringItem index="3" value="Darurat"/>
                           </StringArray>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton1">
+                    <Component class="javax.swing.JButton" name="DoSavePengeluaran">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Simpan"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoSavePengeluaranActionPerformed"/>
+                      </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton2">
+                    <Component class="javax.swing.JButton" name="DoResetPengeluaran">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Reset"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoResetPengeluaranActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>
@@ -432,11 +435,11 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jButton3" max="32767" attributes="0"/>
+                                      <Component id="DoSimpanPemasukan" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton4" min="-2" pref="80" max="-2" attributes="0"/>
+                                      <Component id="DoResetPemasukan" min="-2" pref="80" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jFormattedTextField4" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="pemasukanNominal" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jScrollPane3" pref="180" max="32767" attributes="0"/>
                                   <Component id="panelDatePickerPemasukan" max="32767" attributes="0"/>
                               </Group>
@@ -455,7 +458,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jFormattedTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="pemasukanNominal" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -464,8 +467,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jButton3" max="32767" attributes="0"/>
-                                  <Component id="jButton4" max="32767" attributes="0"/>
+                                  <Component id="DoSimpanPemasukan" max="32767" attributes="0"/>
+                                  <Component id="DoResetPemasukan" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace pref="85" max="32767" attributes="0"/>
                           </Group>
@@ -488,7 +491,7 @@
                         <Property name="text" type="java.lang.String" value="Keterangan"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField4">
+                    <Component class="javax.swing.JFormattedTextField" name="pemasukanNominal">
                       <Properties>
                         <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                           <Format subtype="1" type="0"/>
@@ -502,7 +505,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JTextArea" name="jTextArea2">
+                        <Component class="javax.swing.JTextArea" name="pemasukanKeterangan">
                           <Properties>
                             <Property name="columns" type="int" value="20"/>
                             <Property name="rows" type="int" value="5"/>
@@ -510,17 +513,23 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="jButton3">
+                    <Component class="javax.swing.JButton" name="DoSimpanPemasukan">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Simpan"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoSimpanPemasukanActionPerformed"/>
+                      </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton4">
+                    <Component class="javax.swing.JButton" name="DoResetPemasukan">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Reset"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoResetPemasukanActionPerformed"/>
+                      </Events>
                     </Component>
                     <Container class="javax.swing.JPanel" name="panelDatePickerPemasukan">
                       <Properties>
@@ -650,13 +659,13 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jButton5" max="32767" attributes="0"/>
+                                      <Component id="DoSimpanAgenda" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton6" min="-2" pref="83" max="-2" attributes="0"/>
+                                      <Component id="DoResetAgenda" min="-2" pref="83" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jFormattedTextField6" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="agendaNominal" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jScrollPane5" alignment="0" pref="180" max="32767" attributes="0"/>
-                                  <Component id="jComboBox4" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="agendaOtoritas" alignment="0" max="32767" attributes="0"/>
                                   <Component id="panelDatePickerAgenda" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -674,7 +683,7 @@
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jFormattedTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="agendaNominal" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -683,13 +692,13 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jComboBox4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="agendaOtoritas" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DoSimpanAgenda" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DoResetAgenda" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="59" max="32767" attributes="0"/>
                           </Group>
@@ -712,7 +721,7 @@
                         <Property name="text" type="java.lang.String" value="Keterangan"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField6">
+                    <Component class="javax.swing.JFormattedTextField" name="agendaNominal">
                       <Properties>
                         <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                           <Format subtype="1" type="0"/>
@@ -726,7 +735,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JTextArea" name="jTextArea3">
+                        <Component class="javax.swing.JTextArea" name="agendaKeterangan">
                           <Properties>
                             <Property name="columns" type="int" value="20"/>
                             <Property name="rows" type="int" value="5"/>
@@ -734,31 +743,35 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="jButton5">
+                    <Component class="javax.swing.JButton" name="DoSimpanAgenda">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Simpan"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoSimpanAgendaActionPerformed"/>
+                      </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton6">
+                    <Component class="javax.swing.JButton" name="DoResetAgenda">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Reset"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DoResetAgendaActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel12">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Otoritas"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="jComboBox4">
+                    <Component class="javax.swing.JComboBox" name="agendaOtoritas">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="4">
-                            <StringItem index="0" value="Item 1"/>
-                            <StringItem index="1" value="Item 2"/>
-                            <StringItem index="2" value="Item 3"/>
-                            <StringItem index="3" value="Item 4"/>
+                          <StringArray count="2">
+                            <StringItem index="0" value="Tidak Penting"/>
+                            <StringItem index="1" value="Penting"/>
                           </StringArray>
                         </Property>
                       </Properties>

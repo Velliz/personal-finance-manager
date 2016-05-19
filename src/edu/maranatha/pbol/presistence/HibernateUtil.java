@@ -6,6 +6,7 @@
 
 package edu.maranatha.pbol.presistence;
 
+import edu.maranatha.pbol.util.Validation;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -27,6 +28,7 @@ public class HibernateUtil {
         } catch (Throwable ex) {
             // Log the exception. 
             System.err.println("Initial SessionFactory creation failed." + ex);
+            Validation.infoDialouge(null, "Tidak dapat terhubung ke Database.");
             throw new ExceptionInInitializerError(ex);
         }
     }

@@ -45,7 +45,6 @@ public class Registrasi extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         registrasiNama = new javax.swing.JTextField();
-        registrasiHp = new javax.swing.JTextField();
         registrasiDaftar = new javax.swing.JButton();
         lakilaki = new javax.swing.JRadioButton();
         perempuan = new javax.swing.JRadioButton();
@@ -55,8 +54,9 @@ public class Registrasi extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         registrasiUsername = new javax.swing.JTextField();
         registrasiPassword = new javax.swing.JPasswordField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        daftarReset = new javax.swing.JButton();
+        kembaliLogin = new javax.swing.JButton();
+        registrasiHp = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Registrasi - Manager Pengeluaran Personal v1.0 Beta");
@@ -82,11 +82,6 @@ public class Registrasi extends javax.swing.JFrame {
         grupKelamin.add(lakilaki);
         lakilaki.setSelected(true);
         lakilaki.setText("Laki-Laki");
-        lakilaki.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lakilakiActionPerformed(evt);
-            }
-        });
 
         grupKelamin.add(perempuan);
         perempuan.setText("Perempuan");
@@ -99,19 +94,21 @@ public class Registrasi extends javax.swing.JFrame {
 
         jLabel6.setText("Password");
 
-        jButton2.setText("Reset");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        daftarReset.setText("Reset");
+        daftarReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                daftarResetActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Kembali");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        kembaliLogin.setText("Kembali");
+        kembaliLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                kembaliLoginActionPerformed(evt);
             }
         });
+
+        registrasiHp.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -123,25 +120,11 @@ public class Registrasi extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(56, 56, 56)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                            .addComponent(registrasiNama)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3))
-                        .addGap(26, 26, 26)
-                        .addComponent(registrasiHp, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(41, 41, 41))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                                .addComponent(kembaliLogin)
                                 .addGap(18, 18, 18)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,12 +132,23 @@ public class Registrasi extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(registrasiUsername)
                                     .addComponent(registrasiPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addComponent(daftarReset, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(116, 116, 116)
                         .addComponent(lakilaki)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(perempuan)))
+                        .addComponent(perempuan))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                            .addComponent(registrasiNama)
+                            .addComponent(registrasiHp))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -191,8 +185,8 @@ public class Registrasi extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(registrasiDaftar)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(daftarReset)
+                    .addComponent(kembaliLogin))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -216,7 +210,7 @@ public class Registrasi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void kembaliLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliLoginActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Login().setVisible(true);
@@ -224,7 +218,7 @@ public class Registrasi extends javax.swing.JFrame {
         });
 
         this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_kembaliLoginActionPerformed
 
     private void registrasiDaftarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrasiDaftarActionPerformed
         String nama = registrasiNama.getText();
@@ -263,7 +257,7 @@ public class Registrasi extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_registrasiDaftarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void daftarResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_daftarResetActionPerformed
         // TODO add your handling code here:
         registrasiNama.setText("");
         registrasiAlamat.setText("");
@@ -272,11 +266,7 @@ public class Registrasi extends javax.swing.JFrame {
         lakilaki.setSelected(true);
         registrasiUsername.setText("");
         registrasiPassword.setText("");
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void lakilakiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lakilakiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lakilakiActionPerformed
+    }//GEN-LAST:event_daftarResetActionPerformed
 
     @Override
     protected void processWindowEvent(final WindowEvent e) {
@@ -289,9 +279,8 @@ public class Registrasi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton daftarReset;
     private javax.swing.ButtonGroup grupKelamin;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -300,11 +289,12 @@ public class Registrasi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton kembaliLogin;
     private javax.swing.JRadioButton lakilaki;
     private javax.swing.JRadioButton perempuan;
     private javax.swing.JTextArea registrasiAlamat;
     private javax.swing.JButton registrasiDaftar;
-    private javax.swing.JTextField registrasiHp;
+    private javax.swing.JFormattedTextField registrasiHp;
     private javax.swing.JTextField registrasiNama;
     private javax.swing.JPasswordField registrasiPassword;
     private javax.swing.JTextField registrasiUsername;
