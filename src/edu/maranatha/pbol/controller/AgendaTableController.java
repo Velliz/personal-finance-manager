@@ -5,10 +5,15 @@
  */
 package edu.maranatha.pbol.controller;
 
+import edu.maranatha.pbol.model.pojo.Agenda;
+import edu.maranatha.pbol.model.pojo.Pengeluaran;
 import edu.maranatha.pbol.util.Column;
 import edu.maranatha.pbol.util.MoneyManagerTableModel;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -17,35 +22,57 @@ import java.util.Objects;
  */
 public class AgendaTableController extends MoneyManagerTableModel {
 
-    private final List<String> data = new ArrayList<>();
+    private final List<Agenda> data = new ArrayList<>();
+    NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
-    public final Column indexColumn = new Column("Index", Integer.class) {
+        public final Column idColumn = new Column("ID", Integer.class) {
+
         @Override
         public Object get(int row) {
-            return row + 1;
+            return data.get(row).getIdagenda();
         }
+
     };
-    public final Column stringColumn = new Column("Value", String.class, true) {
+    public final Column nominalColumn = new Column("Nominal", Integer.class, true) {
+
         @Override
         public Object get(int row) {
-            return data.get(row);
+            return formatter.format(data.get(row).getNominalanggaran());
         }
 
         @Override
         public void set(Object value, int row) {
-            data.set(row, (String) value);
+            data.set(row, (Agenda) value);
             fireTableRowsUpdated(row, row);
         }
     };
-    public final Column hashColumn = new Column("Hash", Integer.class) {
+    public final Column tanggalColumn = new Column("Tanggal", Date.class) {
+
         @Override
         public Object get(int row) {
-            return data.get(row).hashCode();
+            return data.get(row).getTanggal();
         }
+
+    };
+    public final Column keteranganColumn = new Column("Keterangan", String.class) {
+
+        @Override
+        public Object get(int row) {
+            return data.get(row).getKeterangan();
+        }
+
+    };
+    public final Column otoritasColumn = new Column("Otoritas", Boolean.class) {
+
+        @Override
+        public Object get(int row) {
+            return data.get(row).isOtoritas();
+        }
+
     };
 
     public AgendaTableController() {
-        addColumns(indexColumn, stringColumn, hashColumn);
+        addColumns(idColumn, nominalColumn, tanggalColumn, keteranganColumn, otoritasColumn);
     }
 
     @Override
@@ -53,9 +80,9 @@ public class AgendaTableController extends MoneyManagerTableModel {
         return data.size();
     }
 
-    public void add(String element) {
+    public void add(Object element) {
         Objects.requireNonNull(element);
-        data.add(element);
+        data.add((Agenda)element);
         fireTableRowsInserted(data.size() - 1, data.size() - 1);
     }
 }

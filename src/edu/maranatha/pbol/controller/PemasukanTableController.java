@@ -8,9 +8,11 @@ package edu.maranatha.pbol.controller;
 import edu.maranatha.pbol.model.pojo.Pemasukan;
 import edu.maranatha.pbol.util.Column;
 import edu.maranatha.pbol.util.MoneyManagerTableModel;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class PemasukanTableController extends MoneyManagerTableModel {
 
     private final List<Pemasukan> data = new ArrayList<>();
+    NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
     public final Column idColumn = new Column("ID", Integer.class) {
 
@@ -33,7 +36,7 @@ public class PemasukanTableController extends MoneyManagerTableModel {
 
         @Override
         public Object get(int row) {
-            return data.get(row).getNominal();
+            return formatter.format(data.get(row).getNominal());
         }
 
         @Override
