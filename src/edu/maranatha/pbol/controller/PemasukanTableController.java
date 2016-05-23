@@ -9,6 +9,7 @@ import edu.maranatha.pbol.util.Column;
 import edu.maranatha.pbol.util.MoneyManagerTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -50,5 +51,11 @@ public class PemasukanTableController extends MoneyManagerTableModel {
     @Override
     public int getRowCount() {
         return data.size();
+    }
+
+    public void add(String element) {
+        Objects.requireNonNull(element);
+        data.add(element);
+        fireTableRowsInserted(data.size() - 1, data.size() - 1);
     }
 }

@@ -6,6 +6,7 @@
 package edu.maranatha.pbol.view;
 
 import edu.maranatha.pbol.controller.AgendaTableController;
+import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.model.pojo.Agenda;
 import edu.maranatha.pbol.model.pojo.Pemasukan;
 import edu.maranatha.pbol.model.pojo.Pengeluaran;
@@ -13,18 +14,15 @@ import edu.maranatha.pbol.model.pojo.User;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
+import edu.maranatha.pbol.util.MoneyManagerTableModel;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
-import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -38,7 +36,7 @@ import org.jdatepicker.impl.UtilDateModel;
 public class MoneyManager extends javax.swing.JFrame {
 
     private JDatePickerImpl datePicker, datePicker2, datePicker3;
-    private AgendaTableController dtmAgenda;
+    private PengeluaranTableController dtmAgenda;
 
     /**
      * Creates new form MoneyManager
@@ -78,10 +76,13 @@ public class MoneyManager extends javax.swing.JFrame {
         panelDatePickerAgenda.setLayout(new CardLayout());
         panelDatePickerAgenda.add(datePicker3);
         
-        dtmAgenda = new AgendaTableController();
+        dtmAgenda = new PengeluaranTableController();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+            List<Pengeluaran> data = session.createQuery("from Pengeluaran").list();
+            for (Pengeluaran peng : data) {
+                dtmAgenda.add(peng);
+            }
         jTable1.setModel(dtmAgenda);
-        dtmAgenda.add("asdf");
-       
     }
 
     /**
