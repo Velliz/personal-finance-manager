@@ -5,16 +5,14 @@
  */
 package edu.maranatha.pbol.view;
 
-import edu.maranatha.pbol.controller.AgendaTableController;
+import edu.maranatha.pbol.controller.PemasukanTableController;
 import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.model.pojo.Agenda;
 import edu.maranatha.pbol.model.pojo.Pemasukan;
 import edu.maranatha.pbol.model.pojo.Pengeluaran;
-import edu.maranatha.pbol.model.pojo.User;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
-import edu.maranatha.pbol.util.MoneyManagerTableModel;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
 import java.awt.event.WindowEvent;
@@ -36,7 +34,8 @@ import org.jdatepicker.impl.UtilDateModel;
 public class MoneyManager extends javax.swing.JFrame {
 
     private JDatePickerImpl datePicker, datePicker2, datePicker3;
-    private PengeluaranTableController dtmAgenda;
+    private PengeluaranTableController dtmPengeluaran;
+    private PemasukanTableController dtmPemasukan;
 
     /**
      * Creates new form MoneyManager
@@ -75,14 +74,23 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
         panelDatePickerAgenda.setLayout(new CardLayout());
         panelDatePickerAgenda.add(datePicker3);
-        
-        dtmAgenda = new PengeluaranTableController();
+
+        dtmPengeluaran = new PengeluaranTableController();
+        dtmPemasukan = new PemasukanTableController();
+    
         Session session = HibernateUtil.getSessionFactory().openSession();
-            List<Pengeluaran> data = session.createQuery("from Pengeluaran").list();
-            for (Pengeluaran peng : data) {
-                dtmAgenda.add(peng);
-            }
-        jTable1.setModel(dtmAgenda);
+        
+        List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran").list();
+        for (Pengeluaran peng : dataKeluar) {
+            dtmPengeluaran.add(peng);
+        }
+        List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan").list();
+        for (Pemasukan pem : dataMasuk) {
+            dtmPemasukan.add(pem);
+        }
+
+        jTablePengeluaran.setModel(dtmPengeluaran);
+        jTablePemasukan.setModel(dtmPemasukan);
     }
 
     /**
@@ -110,7 +118,7 @@ public class MoneyManager extends javax.swing.JFrame {
         DoSavePengeluaran = new javax.swing.JButton();
         DoResetPengeluaran = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTablePengeluaran = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -123,7 +131,7 @@ public class MoneyManager extends javax.swing.JFrame {
         DoResetPemasukan = new javax.swing.JButton();
         panelDatePickerPemasukan = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTablePemasukan = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -249,7 +257,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePengeluaran.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -257,7 +265,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(jTablePengeluaran);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -366,7 +374,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addContainerGap(85, Short.MAX_VALUE))
         );
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePemasukan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -374,7 +382,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(jTable2);
+        jScrollPane4.setViewportView(jTablePemasukan);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -645,8 +653,8 @@ public class MoneyManager extends javax.swing.JFrame {
             session.saveOrUpdate(baru);
             transaction.commit();
 
-            dtmAgenda.add(keterangan);
-            
+            dtmPengeluaran.add(baru);
+
             Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
         }
     }//GEN-LAST:event_DoSavePengeluaranActionPerformed
@@ -672,6 +680,8 @@ public class MoneyManager extends javax.swing.JFrame {
             session.saveOrUpdate(baru);
             transaction.commit();
 
+            dtmPemasukan.add(baru);
+
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
     }//GEN-LAST:event_DoSimpanPemasukanActionPerformed
@@ -685,8 +695,9 @@ public class MoneyManager extends javax.swing.JFrame {
         String otoritas = agendaOtoritas.getModel().getSelectedItem().toString();
 
         boolean authority = false;
-        if(otoritas.equals("Penting"))
+        if (otoritas.equals("Penting")) {
             authority = true;
+        }
 
         if (Validation.Validate(tanggal, nominal, keterangan, otoritas)) {
 
@@ -762,9 +773,9 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTablePemasukan;
+    private javax.swing.JTable jTablePengeluaran;
     private javax.swing.JPanel panelDatePickerAgenda;
     private javax.swing.JPanel panelDatePickerPemasukan;
     private javax.swing.JPanel panelDatePickerPengeluaran;

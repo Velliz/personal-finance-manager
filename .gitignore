@@ -1,10 +1,10 @@
 /build/
 /dist/
-nbproject/private/
+nbproject/private/*
 nbbuild/
 nbdist/
 nbactions.xml
 build.xml
 manifest.mf
 .nb-gradle/
-nbproject/
+nbproject/*
