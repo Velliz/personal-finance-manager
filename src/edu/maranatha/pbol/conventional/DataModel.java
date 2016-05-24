@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * @Deprecated
- * @author PRG2
+ * @Deprecated @author PRG2
  */
 public class DataModel {
 
@@ -21,12 +20,17 @@ public class DataModel {
         table = tablename;
     }
 
-    public ResultSet Get() {
+    public ResultSet Get(String query) {
         String kueri = "SELECT * FROM " + table;
+
+        if (query != null) {
+            kueri = query;
+        }
+
         MysqliConnector.getInstance().ambil(kueri);
 
         if (MysqliConnector.LOG) {
-            System.out.println("LOG QUERY GENERATOR : " + kueri);
+            System.err.println("LOG QUERY GENERATOR : " + kueri);
         }
 
         return MysqliConnector.getInstance().getResult();
@@ -37,7 +41,7 @@ public class DataModel {
         MysqliConnector.getInstance().ambil(kueri);
 
         if (MysqliConnector.LOG) {
-            System.out.println("LOG QUERY GENERATOR : " + kueri);
+            System.err.println("LOG QUERY GENERATOR : " + kueri);
         }
 
         return MysqliConnector.getInstance().getResult();
@@ -62,7 +66,7 @@ public class DataModel {
         }
 
         if (MysqliConnector.LOG) {
-            System.out.println("LOG QUERY GENERATOR : " + queryBuilder);
+            System.err.println("LOG QUERY GENERATOR : " + queryBuilder);
         }
 
         return MysqliConnector.getInstance().kirim(queryBuilder);
@@ -72,7 +76,7 @@ public class DataModel {
         String kueri = "DELETE FROM " + table + " WHERE " + column + " = '" + key + "'";
 
         if (MysqliConnector.LOG) {
-            System.out.println("LOG QUERY GENERATOR : " + kueri);
+            System.err.println("LOG QUERY GENERATOR : " + kueri);
         }
 
         return MysqliConnector.getInstance().kirim(kueri);

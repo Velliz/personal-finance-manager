@@ -8,6 +8,7 @@ package edu.maranatha.pbol.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 /**
@@ -17,7 +18,7 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 public class DateLabelFormatter extends AbstractFormatter {
 
     private String datePattern = "dd MMMM yyyy";
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
 
     @Override
     public Object stringToValue(String text) throws ParseException {

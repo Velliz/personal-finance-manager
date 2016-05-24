@@ -8,6 +8,7 @@ package edu.maranatha.pbol.view;
 import edu.maranatha.pbol.controller.AgendaTableController;
 import edu.maranatha.pbol.controller.PemasukanTableController;
 import edu.maranatha.pbol.controller.PengeluaranTableController;
+import edu.maranatha.pbol.conventional.DBI;
 import edu.maranatha.pbol.model.pojo.Agenda;
 import edu.maranatha.pbol.model.pojo.Pemasukan;
 import edu.maranatha.pbol.model.pojo.Pengeluaran;
@@ -17,11 +18,17 @@ import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -39,10 +46,18 @@ public class MoneyManager extends javax.swing.JFrame {
     private PemasukanTableController dtmPemasukan;
     private AgendaTableController dtmAgenda;
 
+    private NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+
+    private DBI dbuser = new DBI("user");
+    private DBI dbpemasukan = new DBI("pemasukan");
+    private DBI dbpengeluaran = new DBI("pengeluaran");
+    private DBI dbagenda = new DBI("agenda");
+
     /**
      * Creates new form MoneyManager
      */
     public MoneyManager() {
+
         initComponents();
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
@@ -83,22 +98,35 @@ public class MoneyManager extends javax.swing.JFrame {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran").list();
-        for (Pengeluaran peng : dataKeluar) {
+        List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
+        for (Object peng : dataKeluar) {
             dtmPengeluaran.add(peng);
         }
-        List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan").list();
+        List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan WHERE iduser = " + Cache.user.getId()).list();
         for (Pemasukan pem : dataMasuk) {
             dtmPemasukan.add(pem);
         }
-        List<Agenda> dataAgenda = session.createQuery("from Agenda").list();
+        List<Agenda> dataAgenda = session.createQuery("from Agenda WHERE iduser = " + Cache.user.getId()).list();
         for (Agenda agen : dataAgenda) {
             dtmAgenda.add(agen);
         }
 
+        //fetchPengeluaran();
+        //fetchPemasukan();
+        //fetchAgenda();
+        
         jTablePengeluaran.setModel(dtmPengeluaran);
         jTablePemasukan.setModel(dtmPemasukan);
         jTableAgenda.setModel(dtmAgenda);
+
+        setSisaSaldo();
+    }
+
+    public final void setSisaSaldo() {
+        String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
+        saldo1.setText(sisaKas);
+        saldo2.setText(sisaKas);
+        saldo3.setText(sisaKas);
     }
 
     /**
@@ -119,12 +147,14 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         panelDatePickerPengeluaran = new javax.swing.JPanel();
-        pengeluaranNominal = new javax.swing.JFormattedTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         pengeluaranKeterangan = new javax.swing.JTextArea();
         pengeluaranJenis = new javax.swing.JComboBox();
         DoSavePengeluaran = new javax.swing.JButton();
         DoResetPengeluaran = new javax.swing.JButton();
+        pengeluaranNominal = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        saldo1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTablePengeluaran = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -132,12 +162,14 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        pemasukanNominal = new javax.swing.JFormattedTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         pemasukanKeterangan = new javax.swing.JTextArea();
         DoSimpanPemasukan = new javax.swing.JButton();
         DoResetPemasukan = new javax.swing.JButton();
         panelDatePickerPemasukan = new javax.swing.JPanel();
+        pemasukanNominal = new javax.swing.JTextField();
+        jPanel7 = new javax.swing.JPanel();
+        saldo2 = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTablePemasukan = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
@@ -145,7 +177,6 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        agendaNominal = new javax.swing.JFormattedTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
         agendaKeterangan = new javax.swing.JTextArea();
         DoSimpanAgenda = new javax.swing.JButton();
@@ -153,6 +184,9 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         agendaOtoritas = new javax.swing.JComboBox();
         panelDatePickerAgenda = new javax.swing.JPanel();
+        agendaNominal = new javax.swing.JTextField();
+        jPanel10 = new javax.swing.JPanel();
+        saldo3 = new javax.swing.JTextField();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTableAgenda = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -192,8 +226,6 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGap(0, 23, Short.MAX_VALUE)
         );
 
-        pengeluaranNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-
         pengeluaranKeterangan.setColumns(20);
         pengeluaranKeterangan.setRows(5);
         jScrollPane1.setViewportView(pengeluaranKeterangan);
@@ -216,6 +248,25 @@ public class MoneyManager extends javax.swing.JFrame {
             }
         });
 
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Sisa Saldo"));
+
+        saldo1.setEditable(false);
+        saldo1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(saldo1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saldo1, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -223,21 +274,25 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(DoSavePengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(DoResetPengeluaran, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pengeluaranNominal)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-                    .addComponent(pengeluaranJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(DoSavePengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(DoResetPengeluaran, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                            .addComponent(pengeluaranJenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                            .addComponent(pengeluaranNominal))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,10 +302,10 @@ public class MoneyManager extends javax.swing.JFrame {
                     .addComponent(panelDatePickerPengeluaran, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(pengeluaranNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(pengeluaranNominal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -262,7 +317,9 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DoSavePengeluaran)
                     .addComponent(DoResetPengeluaran))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTablePengeluaran.setModel(new javax.swing.table.DefaultTableModel(
@@ -290,8 +347,10 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         jTabbedPane1.addTab("Pengeluaran", jPanel2);
@@ -303,8 +362,6 @@ public class MoneyManager extends javax.swing.JFrame {
         jLabel6.setText("Nominal");
 
         jLabel7.setText("Keterangan");
-
-        pemasukanNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
         pemasukanKeterangan.setColumns(20);
         pemasukanKeterangan.setRows(5);
@@ -339,6 +396,25 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGap(0, 23, Short.MAX_VALUE)
         );
 
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Sisa Saldo"));
+
+        saldo2.setEditable(false);
+        saldo2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(saldo2, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saldo2, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -346,19 +422,23 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addComponent(DoSimpanPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DoResetPemasukan, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pemasukanNominal)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(DoSimpanPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(DoResetPemasukan, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                            .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pemasukanNominal))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,7 +448,7 @@ public class MoneyManager extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(pemasukanNominal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -379,7 +459,9 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(DoSimpanPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(DoResetPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTablePemasukan.setModel(new javax.swing.table.DefaultTableModel(
@@ -421,8 +503,6 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jLabel11.setText("Keterangan");
 
-        agendaNominal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-
         agendaKeterangan.setColumns(20);
         agendaKeterangan.setRows(5);
         jScrollPane5.setViewportView(agendaKeterangan);
@@ -460,6 +540,25 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGap(0, 23, Short.MAX_VALUE)
         );
 
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Sisa Saldo"));
+
+        saldo3.setEditable(false);
+        saldo3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(saldo3, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saldo3, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -467,21 +566,25 @@ public class MoneyManager extends javax.swing.JFrame {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel12))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(DoSimpanAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DoResetAgenda, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(agendaNominal)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(agendaOtoritas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelDatePickerAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                                .addComponent(DoSimpanAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(DoResetAgenda, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                            .addComponent(agendaOtoritas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDatePickerAgenda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(agendaNominal))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -506,7 +609,9 @@ public class MoneyManager extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DoSimpanAgenda)
                     .addComponent(DoResetAgenda))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTableAgenda.setModel(new javax.swing.table.DefaultTableModel(
@@ -551,7 +656,7 @@ public class MoneyManager extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -609,7 +714,7 @@ public class MoneyManager extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         pack();
@@ -623,6 +728,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Login().setVisible(true);
             }
@@ -632,6 +738,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
     private void TemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TemaActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Settings().setVisible(true);
             }
@@ -646,25 +753,45 @@ public class MoneyManager extends javax.swing.JFrame {
     }//GEN-LAST:event_DoResetPengeluaranActionPerformed
 
     private void DoSavePengeluaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSavePengeluaranActionPerformed
-        String datePattern = "dd MMMM yyyy";
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-        String tanggal = dateFormatter.format(datePicker.getModel().getValue());
-        int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
-        String keterangan = pengeluaranKeterangan.getText();
-        String status = pengeluaranJenis.getModel().getSelectedItem().toString();
+        try {
+            String datePattern = "dd MMMM yyyy";
+            SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+            String tanggal = dateFormatter.format(datePicker.getModel().getValue());
 
-        if (Validation.Validate(tanggal, nominal, keterangan, status)) {
-            Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
+            int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
 
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(baru);
-            transaction.commit();
+            String keterangan = pengeluaranKeterangan.getText();
+            String status = pengeluaranJenis.getModel().getSelectedItem().toString();
 
-            dtmPengeluaran.add(baru);
+            if (Validation.Validate(tanggal, nominal, keterangan, status)) {
 
-            Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
+                if (Cache.getKas() < nominal) {
+                    Validation.dangerDialouge(this, "Pengeluaran anda bulan ini sudah melebihi pemasukan.!");
+                    return;
+                }
+
+                if ((nominal + Cache.getPengeluaran(tanggal)) > Cache.getAgenda(tanggal)) {
+                    if (Validation.confirmationDialouge(this, "Pengeluaran anda melebihi anggaran. Tetap lanjutkan.?") == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+                }
+
+                Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
+
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                Transaction transaction = session.beginTransaction();
+                session.saveOrUpdate(baru);
+                transaction.commit();
+
+                dtmPengeluaran.add(baru);
+                setSisaSaldo();
+                Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
+            }
+
+        } catch (NumberFormatException ex) {
+            Validation.infoDialouge(this, "Nominal harus angka positif");
         }
+
     }//GEN-LAST:event_DoSavePengeluaranActionPerformed
 
     private void DoResetPemasukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetPemasukanActionPerformed
@@ -692,6 +819,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
+        setSisaSaldo();
     }//GEN-LAST:event_DoSimpanPemasukanActionPerformed
 
     private void DoSimpanAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSimpanAgendaActionPerformed
@@ -717,10 +845,10 @@ public class MoneyManager extends javax.swing.JFrame {
             transaction.commit();
 
             dtmAgenda.add(baru);
-            
+
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
-
+        setSisaSaldo();
     }//GEN-LAST:event_DoSimpanAgendaActionPerformed
 
     private void DoResetAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetAgendaActionPerformed
@@ -740,6 +868,81 @@ public class MoneyManager extends javax.swing.JFrame {
         }
     }
 
+    /*
+     private void TableModelData() {
+     String[] columnNames = {"Id", "Name", "Department", "Email"};
+     String[][] data = {
+     {"111", "G Conger", " Orthopaedic", "jim@wheremail.com"},
+     {"222", "A Date", "ENT", "adate@somemail.com"},
+     {"333", "R Linz", "Paedriatics", "rlinz@heremail.com"},
+     {"444", "V Sethi", "Nephrology", "vsethi@whomail.com"},
+     {"555", "K Rao", "Orthopaedics", "krao@whatmail.com"},
+     {"666", "V Santana", "Nephrology", "vsan@whenmail.com"},
+     {"777", "J Pollock", "Nephrology", "jpol@domail.com"},
+     {"888", "H David", "Nephrology", "hdavid@donemail.com"},
+     {"999", "P Patel", "Nephrology", "ppatel@gomail.com"},
+     {"101", "C Comer", "Nephrology", "ccomer@whymail.com"}
+     };
+     tableModel = new DefaultTableModel(data, columnNames);
+     }
+     */
+    
+    private void fetchPengeluaran() {
+        try {
+            ResultSet kas = dbpengeluaran.select("select * from pengeluaran where iduser = " + Cache.user.getId());
+
+            while (kas.next()) {
+                Pengeluaran u = new Pengeluaran(
+                        Cache.user,
+                        kas.getInt("nominal"),
+                        kas.getDate("tanggalpengeluaran"),
+                        kas.getString("keterangan"),
+                        kas.getString("status"));
+                u.setIdpengeluaran(kas.getInt("idpengeluaran"));
+                dtmPengeluaran.add(u);
+            }
+        } catch (SQLException ex) {
+            Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
+        }
+    }
+
+    private void fetchPemasukan() {
+        try {
+            ResultSet kas = dbpemasukan.select("select * from pemasukan where iduser = " + Cache.user.getId());
+
+            while (kas.next()) {
+                Pemasukan u = new Pemasukan(
+                        Cache.user,
+                        kas.getInt("nominal"),
+                        kas.getDate("tanggalpemasukan"),
+                        kas.getString("keterangan"));
+                u.setIdpemasukan(kas.getInt("idpemasukan"));
+                dtmPemasukan.add(u);
+            }
+        } catch (SQLException ex) {
+            Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
+        }
+    }
+
+    private void fetchAgenda() {
+        try {
+            ResultSet kas = dbagenda.select("select * from agenda where iduser = " + Cache.user.getId());
+
+            while (kas.next()) {
+                Agenda u = new Agenda(
+                        Cache.user,
+                        kas.getInt("nominalanggaran"),
+                        kas.getDate("tanggal"),
+                        kas.getString("keterangan"),
+                        kas.getBoolean("otoritas"));
+                u.setIdagenda(kas.getInt("idagenda"));
+                dtmAgenda.add(u);
+            }
+        } catch (SQLException ex) {
+            Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton DoResetAgenda;
     private javax.swing.JButton DoResetPemasukan;
@@ -749,7 +952,7 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JButton DoSimpanPemasukan;
     private javax.swing.JMenuItem Tema;
     private javax.swing.JTextArea agendaKeterangan;
-    private javax.swing.JFormattedTextField agendaNominal;
+    private javax.swing.JTextField agendaNominal;
     private javax.swing.JComboBox agendaOtoritas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -769,10 +972,13 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
@@ -790,9 +996,12 @@ public class MoneyManager extends javax.swing.JFrame {
     private javax.swing.JPanel panelDatePickerPemasukan;
     private javax.swing.JPanel panelDatePickerPengeluaran;
     private javax.swing.JTextArea pemasukanKeterangan;
-    private javax.swing.JFormattedTextField pemasukanNominal;
+    private javax.swing.JTextField pemasukanNominal;
     private javax.swing.JComboBox pengeluaranJenis;
     private javax.swing.JTextArea pengeluaranKeterangan;
-    private javax.swing.JFormattedTextField pengeluaranNominal;
+    private javax.swing.JTextField pengeluaranNominal;
+    private javax.swing.JTextField saldo1;
+    private javax.swing.JTextField saldo2;
+    private javax.swing.JTextField saldo3;
     // End of variables declaration//GEN-END:variables
 }

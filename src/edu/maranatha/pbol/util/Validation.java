@@ -68,6 +68,20 @@ public class Validation {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static int dangerDialouge(Component parrent, String message) {
+        return JOptionPane.showConfirmDialog(parrent, message,
+                "Peringatan", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static int confirmationDialouge(Component parrent, String message) {
+        return JOptionPane.showConfirmDialog(parrent, message, "Peringatan", JOptionPane.YES_NO_OPTION);
+        /*
+        if (dialogResult == JOptionPane.YES_OPTION) {
+
+        }
+        */
+    }
+
     public static void Logger(Object... values) {
         for (Object value : values) {
             System.out.println(value.toString());

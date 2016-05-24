@@ -6,6 +6,7 @@
 package edu.maranatha.pbol.view;
 
 import de.javasoft.plaf.synthetica.SyntheticaSilverMoonLookAndFeel;
+import edu.maranatha.pbol.conventional.DBI;
 import edu.maranatha.pbol.model.pojo.User;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
@@ -13,9 +14,10 @@ import edu.maranatha.pbol.util.Validation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,12 +26,6 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRTableModelDataSource;
-import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.Session;
 
 /**
@@ -50,18 +46,18 @@ public class Login extends javax.swing.JFrame implements ActionListener {
         initComponents();
         setLocationRelativeTo(null);
         time.start();
-        
-        JasperPrint jasperPrint = null;
-        TableModelData();
-        try {
-            JasperCompileManager.compileReportToFile("report/balancesheet.jrxml");
-            jasperPrint = JasperFillManager.fillReport("report/balancesheet.jasper", new HashMap(),
-                    new JRTableModelDataSource(tableModel));
-            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
-            jasperViewer.setVisible(true);
-        } catch (JRException ex) {
-            ex.printStackTrace();
-        }
+
+//        JasperPrint jasperPrint = null;
+//        TableModelData();
+//        try {
+//            JasperCompileManager.compileReportToFile("report/balancesheet.jrxml");
+//            jasperPrint = JasperFillManager.fillReport("report/balancesheet.jasper", new HashMap(),
+//                    new JRTableModelDataSource(tableModel));
+//            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+//            jasperViewer.setVisible(true);
+//        } catch (JRException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     /**
@@ -77,11 +73,11 @@ public class Login extends javax.swing.JFrame implements ActionListener {
         jLabel1 = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        password = new javax.swing.JTextField();
         DoLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         DoDaftar = new javax.swing.JButton();
         dates = new javax.swing.JLabel();
+        password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Login - Manager Pengeluaran Personal v1.0 Beta");
@@ -196,9 +192,9 @@ public class Login extends javax.swing.JFrame implements ActionListener {
             List<User> data = session.createQuery("from User").list();
             for (User user : data) {
                 if (user.getUsername().equals(uname) && user.getPassword().equals(pwd)) {
-                    
+
                     Cache.user = user;
-                    
+
                     java.awt.EventQueue.invokeLater(new Runnable() {
                         public void run() {
                             new MoneyManager().setVisible(true);
@@ -208,8 +204,9 @@ public class Login extends javax.swing.JFrame implements ActionListener {
                     return;
                 }
             }
+
             Validation.infoDialouge(this, "Login Gagal, Username / Password Salah");
-            
+
         }
     }//GEN-LAST:event_DoLoginActionPerformed
 
@@ -266,7 +263,7 @@ public class Login extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField password;
+    private javax.swing.JPasswordField password;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 
@@ -278,22 +275,34 @@ public class Login extends javax.swing.JFrame implements ActionListener {
         int s = now.get(Calendar.SECOND);
         dates.setText(h + ":" + m + ":" + s);
     }
-    
-    private void TableModelData() {
-        String[] columnNames = {"Id", "Name", "Department", "Email"};
-        String[][] data = {
-            {"111", "G Conger", " Orthopaedic", "jim@wheremail.com"},
-            {"222", "A Date", "ENT", "adate@somemail.com"},
-            {"333", "R Linz", "Paedriatics", "rlinz@heremail.com"},
-            {"444", "V Sethi", "Nephrology", "vsethi@whomail.com"},
-            {"555", "K Rao", "Orthopaedics", "krao@whatmail.com"},
-            {"666", "V Santana", "Nephrology", "vsan@whenmail.com"},
-            {"777", "J Pollock", "Nephrology", "jpol@domail.com"},
-            {"888", "H David", "Nephrology", "hdavid@donemail.com"},
-            {"999", "P Patel", "Nephrology", "ppatel@gomail.com"},
-            {"101", "C Comer", "Nephrology", "ccomer@whymail.com"}
-        };
-        tableModel = new DefaultTableModel(data, columnNames);
+
+    private void manualAuth(String uname, String pwd) {
+        DBI dbuser = new DBI("user");
+        try {
+            ResultSet kas = dbuser.select(null);
+
+            while (kas.next()) {
+                if (kas.getString("username").equals(uname) && kas.getString("password").equals(pwd)) {
+                    User u = new User(
+                            kas.getString("username"),
+                            kas.getString("password"),
+                            kas.getString("nama"),
+                            kas.getString("alamat"),
+                            kas.getString("nohp"),
+                            kas.getString("jeniskelamin"));
+                    u.setId(kas.getInt("id"));
+                    Cache.user = u;
+                    java.awt.EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            new MoneyManager().setVisible(true);
+                        }
+                    });
+                    this.dispose();
+                    return;
+                }
+            }
+        } catch (SQLException ex) {
+            Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
+        }
     }
-   
 }
