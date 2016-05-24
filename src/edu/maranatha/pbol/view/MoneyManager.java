@@ -755,7 +755,7 @@ public class MoneyManager extends javax.swing.JFrame {
     private void DoSavePengeluaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSavePengeluaranActionPerformed
         try {
             String datePattern = "dd MMMM yyyy";
-            SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
             String tanggal = dateFormatter.format(datePicker.getModel().getValue());
 
             int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
@@ -802,7 +802,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
     private void DoSimpanPemasukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSimpanPemasukanActionPerformed
         String datePattern = "dd MMMM yyyy";
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
         String tanggal = dateFormatter.format(datePicker2.getModel().getValue());
         int nominal = Integer.parseInt(pemasukanNominal.getText().replace(",", ""));
         String keterangan = pemasukanKeterangan.getText();
@@ -824,7 +824,7 @@ public class MoneyManager extends javax.swing.JFrame {
 
     private void DoSimpanAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoSimpanAgendaActionPerformed
         String datePattern = "dd MMMM yyyy";
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
         String tanggal = dateFormatter.format(datePicker3.getModel().getValue());
         int nominal = Integer.parseInt(agendaNominal.getText().replace(",", ""));
         String keterangan = agendaKeterangan.getText();
