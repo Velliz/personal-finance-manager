@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,14 +39,14 @@ import org.jdatepicker.impl.UtilDateModel;
  * @author didit
  */
 public class MoneyManager extends javax.swing.JFrame {
-
+    
     private JDatePickerImpl datePicker, datePicker2, datePicker3;
     private PengeluaranTableController dtmPengeluaran;
     private PemasukanTableController dtmPemasukan;
     private AgendaTableController dtmAgenda;
-
+    
     private NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-
+    
     private DBI dbuser = new DBI("user");
     private DBI dbpemasukan = new DBI("pemasukan");
     private DBI dbpengeluaran = new DBI("pengeluaran");
@@ -57,11 +56,11 @@ public class MoneyManager extends javax.swing.JFrame {
      * Creates new form MoneyManager
      */
     public MoneyManager() {
-
+        
         initComponents();
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
-
+        
         UtilDateModel model = new UtilDateModel();
         Properties p = new Properties();
         p.put("text.today", "Today");
@@ -71,7 +70,7 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         panelDatePickerPengeluaran.setLayout(new CardLayout());
         panelDatePickerPengeluaran.add(datePicker);
-
+        
         UtilDateModel model2 = new UtilDateModel();
         Properties p2 = new Properties();
         p2.put("text.today", "Today");
@@ -81,7 +80,7 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         panelDatePickerPemasukan.setLayout(new CardLayout());
         panelDatePickerPemasukan.add(datePicker2);
-
+        
         UtilDateModel model3 = new UtilDateModel();
         Properties p3 = new Properties();
         p3.put("text.today", "Today");
@@ -91,13 +90,13 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
         panelDatePickerAgenda.setLayout(new CardLayout());
         panelDatePickerAgenda.add(datePicker3);
-
+        
         dtmPengeluaran = new PengeluaranTableController();
         dtmPemasukan = new PemasukanTableController();
         dtmAgenda = new AgendaTableController();
-
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
-
+        
         List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
         for (Object peng : dataKeluar) {
             dtmPengeluaran.add(peng);
@@ -114,14 +113,13 @@ public class MoneyManager extends javax.swing.JFrame {
         //fetchPengeluaran();
         //fetchPemasukan();
         //fetchAgenda();
-        
         jTablePengeluaran.setModel(dtmPengeluaran);
         jTablePemasukan.setModel(dtmPemasukan);
         jTableAgenda.setModel(dtmAgenda);
-
+        
         setSisaSaldo();
     }
-
+    
     public final void setSisaSaldo() {
         String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
         saldo1.setText(sisaKas);
@@ -757,37 +755,37 @@ public class MoneyManager extends javax.swing.JFrame {
             String datePattern = "dd MMMM yyyy";
             SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
             String tanggal = dateFormatter.format(datePicker.getModel().getValue());
-
+            
             int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
-
+            
             String keterangan = pengeluaranKeterangan.getText();
             String status = pengeluaranJenis.getModel().getSelectedItem().toString();
-
+            
             if (Validation.Validate(tanggal, nominal, keterangan, status)) {
-
+                
                 if (Cache.getKas() < nominal) {
                     Validation.dangerDialouge(this, "Pengeluaran anda bulan ini sudah melebihi pemasukan.!");
                     return;
                 }
-
+                
                 if ((nominal + Cache.getPengeluaran(tanggal)) > Cache.getAgenda(tanggal)) {
-                    if (Validation.confirmationDialouge(this, "Pengeluaran anda melebihi anggaran. Tetap lanjutkan.?") == JOptionPane.NO_OPTION) {
+                    if (Validation.confirmationDialouge(this, "Pengeluaran anda melebihi anggaran " + formatter.format((nominal + Cache.getPengeluaran(tanggal)) - Cache.getAgenda(tanggal)) + ". Tetap lanjutkan.?") == JOptionPane.NO_OPTION) {
                         return;
                     }
                 }
-
+                
                 Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
-
+                
                 Session session = HibernateUtil.getSessionFactory().openSession();
                 Transaction transaction = session.beginTransaction();
                 session.saveOrUpdate(baru);
                 transaction.commit();
-
+                
                 dtmPengeluaran.add(baru);
                 setSisaSaldo();
                 Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
             }
-
+            
         } catch (NumberFormatException ex) {
             Validation.infoDialouge(this, "Nominal harus angka positif");
         }
@@ -806,17 +804,17 @@ public class MoneyManager extends javax.swing.JFrame {
         String tanggal = dateFormatter.format(datePicker2.getModel().getValue());
         int nominal = Integer.parseInt(pemasukanNominal.getText().replace(",", ""));
         String keterangan = pemasukanKeterangan.getText();
-
+        
         if (Validation.Validate(tanggal, nominal, keterangan)) {
             Pemasukan baru = new Pemasukan(Cache.user, nominal, (Date) datePicker2.getModel().getValue(), keterangan);
-
+            
             Session session = HibernateUtil.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
             transaction.commit();
-
+            
             dtmPemasukan.add(baru);
-
+            
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
         setSisaSaldo();
@@ -829,23 +827,23 @@ public class MoneyManager extends javax.swing.JFrame {
         int nominal = Integer.parseInt(agendaNominal.getText().replace(",", ""));
         String keterangan = agendaKeterangan.getText();
         String otoritas = agendaOtoritas.getModel().getSelectedItem().toString();
-
+        
         boolean authority = false;
         if (otoritas.equals("Penting")) {
             authority = true;
         }
-
+        
         if (Validation.Validate(tanggal, nominal, keterangan, otoritas)) {
-
+            
             Agenda baru = new Agenda(Cache.user, nominal, (Date) datePicker3.getModel().getValue(), keterangan, authority);
-
+            
             Session session = HibernateUtil.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
             transaction.commit();
-
+            
             dtmAgenda.add(baru);
-
+            
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
         setSisaSaldo();
@@ -857,7 +855,7 @@ public class MoneyManager extends javax.swing.JFrame {
         agendaKeterangan.setText("");
         agendaOtoritas.setSelectedIndex(0);
     }//GEN-LAST:event_DoResetAgendaActionPerformed
-
+    
     @Override
     protected void processWindowEvent(final WindowEvent e) {
         super.processWindowEvent(e);
@@ -886,11 +884,10 @@ public class MoneyManager extends javax.swing.JFrame {
      tableModel = new DefaultTableModel(data, columnNames);
      }
      */
-    
     private void fetchPengeluaran() {
         try {
             ResultSet kas = dbpengeluaran.select("select * from pengeluaran where iduser = " + Cache.user.getId());
-
+            
             while (kas.next()) {
                 Pengeluaran u = new Pengeluaran(
                         Cache.user,
@@ -905,11 +902,11 @@ public class MoneyManager extends javax.swing.JFrame {
             Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
         }
     }
-
+    
     private void fetchPemasukan() {
         try {
             ResultSet kas = dbpemasukan.select("select * from pemasukan where iduser = " + Cache.user.getId());
-
+            
             while (kas.next()) {
                 Pemasukan u = new Pemasukan(
                         Cache.user,
@@ -923,11 +920,11 @@ public class MoneyManager extends javax.swing.JFrame {
             Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
         }
     }
-
+    
     private void fetchAgenda() {
         try {
             ResultSet kas = dbagenda.select("select * from agenda where iduser = " + Cache.user.getId());
-
+            
             while (kas.next()) {
                 Agenda u = new Agenda(
                         Cache.user,
