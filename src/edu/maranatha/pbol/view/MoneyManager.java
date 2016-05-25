@@ -5,7 +5,10 @@
  */
 package edu.maranatha.pbol.view;
 
+import edu.maranatha.pbol.controller.AgendaReportController;
 import edu.maranatha.pbol.controller.AgendaTableController;
+import edu.maranatha.pbol.controller.PemasukanReportController;
+import edu.maranatha.pbol.controller.PengeluaranReportController;
 import edu.maranatha.pbol.controller.PemasukanTableController;
 import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.conventional.DBI;
@@ -67,6 +70,10 @@ public class MoneyManager extends javax.swing.JFrame {
     private final DBI dbpengeluaran = new DBI("pengeluaran");
     private final DBI dbagenda = new DBI("agenda");
 
+    private List<Pengeluaran> dataKeluar;
+    private List<Pemasukan> dataMasuk;
+    private List<Agenda> dataAgenda;
+
     private final JPopupMenu popupMenuPengeluaran = new JPopupMenu();
     private final JPopupMenu popupMenuPemasukan = new JPopupMenu();
     private final JPopupMenu popupMenuAgenda = new JPopupMenu();
@@ -117,15 +124,15 @@ public class MoneyManager extends javax.swing.JFrame {
         // if use hibernate connection schema
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
+        dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
         for (Object peng : dataKeluar) {
             dtmPengeluaran.add(peng);
         }
-        List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan WHERE iduser = " + Cache.user.getId()).list();
+        dataMasuk = session.createQuery("from Pemasukan WHERE iduser = " + Cache.user.getId()).list();
         for (Pemasukan pem : dataMasuk) {
             dtmPemasukan.add(pem);
         }
-        List<Agenda> dataAgenda = session.createQuery("from Agenda WHERE iduser = " + Cache.user.getId()).list();
+        dataAgenda = session.createQuery("from Agenda WHERE iduser = " + Cache.user.getId()).list();
         for (Agenda agen : dataAgenda) {
             dtmAgenda.add(agen);
         }
@@ -1061,13 +1068,20 @@ public class MoneyManager extends javax.swing.JFrame {
     }//GEN-LAST:event_DoResetAgendaActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        
+        // if use hibernate connection schema
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
+        dataMasuk = session.createQuery("from Pemasukan WHERE iduser = " + Cache.user.getId()).list();
+        dataAgenda = session.createQuery("from Agenda WHERE iduser = " + Cache.user.getId()).list();
+        
+        JasperPrint jasperPrint = null;
         switch (jTabbedPane1.getSelectedIndex()) {
             case 0:
-                JasperPrint jasperPrint = null;
                 try {
-                    JasperCompileManager.compileReportToFile("report/balancesheet.jrxml");
-                    jasperPrint = JasperFillManager.fillReport("report/balancesheet.jasper", new HashMap(),
-                            new JRTableModelDataSource(dtmAgenda));
+                    JasperCompileManager.compileReportToFile("report/pengeluaran.jrxml");
+                    jasperPrint = JasperFillManager.fillReport("report/pengeluaran.jasper", new HashMap(),
+                            new JRTableModelDataSource(new PengeluaranReportController(dataKeluar)));
                     JasperViewer jasperViewer = new JasperViewer(jasperPrint);
                     jasperViewer.setVisible(true);
                 } catch (JRException ex) {
@@ -1075,8 +1089,26 @@ public class MoneyManager extends javax.swing.JFrame {
                 }
                 break;
             case 1:
+                try {
+                    JasperCompileManager.compileReportToFile("report/pemasukan.jrxml");
+                    jasperPrint = JasperFillManager.fillReport("report/pemasukan.jasper", new HashMap(),
+                            new JRTableModelDataSource(new PemasukanReportController(dataMasuk)));
+                    JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+                    jasperViewer.setVisible(true);
+                } catch (JRException ex) {
+                    ex.printStackTrace();
+                }
                 break;
-            case 3:
+            case 2:
+                try {
+                    JasperCompileManager.compileReportToFile("report/agenda.jrxml");
+                    jasperPrint = JasperFillManager.fillReport("report/agenda.jasper", new HashMap(),
+                            new JRTableModelDataSource(new AgendaReportController(dataAgenda)));
+                    JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+                    jasperViewer.setVisible(true);
+                } catch (JRException ex) {
+                    ex.printStackTrace();
+                }
                 break;
 
         }
