@@ -6,7 +6,6 @@
 package edu.maranatha.pbol.controller;
 
 import edu.maranatha.pbol.model.pojo.Agenda;
-import edu.maranatha.pbol.model.pojo.Pengeluaran;
 import edu.maranatha.pbol.util.Column;
 import edu.maranatha.pbol.util.MoneyManagerTableModel;
 import java.text.NumberFormat;

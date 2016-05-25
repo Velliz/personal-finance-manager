@@ -293,6 +293,7 @@ public class Login extends javax.swing.JFrame implements ActionListener {
                     u.setId(kas.getInt("id"));
                     Cache.user = u;
                     java.awt.EventQueue.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             new MoneyManager().setVisible(true);
                         }

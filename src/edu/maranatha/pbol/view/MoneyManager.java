@@ -17,6 +17,9 @@ import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +30,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -39,28 +47,32 @@ import org.jdatepicker.impl.UtilDateModel;
  * @author didit
  */
 public class MoneyManager extends javax.swing.JFrame {
-    
-    private JDatePickerImpl datePicker, datePicker2, datePicker3;
-    private PengeluaranTableController dtmPengeluaran;
-    private PemasukanTableController dtmPemasukan;
-    private AgendaTableController dtmAgenda;
-    
-    private NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-    
-    private DBI dbuser = new DBI("user");
-    private DBI dbpemasukan = new DBI("pemasukan");
-    private DBI dbpengeluaran = new DBI("pengeluaran");
-    private DBI dbagenda = new DBI("agenda");
+
+    private final JDatePickerImpl datePicker, datePicker2, datePicker3;
+    private final PengeluaranTableController dtmPengeluaran;
+    private final PemasukanTableController dtmPemasukan;
+    private final AgendaTableController dtmAgenda;
+
+    private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+
+    private final DBI dbuser = new DBI("user");
+    private final DBI dbpemasukan = new DBI("pemasukan");
+    private final DBI dbpengeluaran = new DBI("pengeluaran");
+    private final DBI dbagenda = new DBI("agenda");
+
+    private final JPopupMenu popupMenuPengeluaran = new JPopupMenu();
+    private final JPopupMenu popupMenuPemasukan = new JPopupMenu();
+    private final JPopupMenu popupMenuAgenda = new JPopupMenu();
 
     /**
      * Creates new form MoneyManager
      */
     public MoneyManager() {
-        
+
         initComponents();
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
-        
+
         UtilDateModel model = new UtilDateModel();
         Properties p = new Properties();
         p.put("text.today", "Today");
@@ -70,7 +82,7 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         panelDatePickerPengeluaran.setLayout(new CardLayout());
         panelDatePickerPengeluaran.add(datePicker);
-        
+
         UtilDateModel model2 = new UtilDateModel();
         Properties p2 = new Properties();
         p2.put("text.today", "Today");
@@ -80,7 +92,7 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         panelDatePickerPemasukan.setLayout(new CardLayout());
         panelDatePickerPemasukan.add(datePicker2);
-        
+
         UtilDateModel model3 = new UtilDateModel();
         Properties p3 = new Properties();
         p3.put("text.today", "Today");
@@ -90,13 +102,14 @@ public class MoneyManager extends javax.swing.JFrame {
         datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
         panelDatePickerAgenda.setLayout(new CardLayout());
         panelDatePickerAgenda.add(datePicker3);
-        
+
         dtmPengeluaran = new PengeluaranTableController();
         dtmPemasukan = new PemasukanTableController();
         dtmAgenda = new AgendaTableController();
-        
+
+        // if use hibernate connection schema
         Session session = HibernateUtil.getSessionFactory().openSession();
-        
+
         List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE iduser = " + Cache.user.getId()).list();
         for (Object peng : dataKeluar) {
             dtmPengeluaran.add(peng);
@@ -109,17 +122,166 @@ public class MoneyManager extends javax.swing.JFrame {
         for (Agenda agen : dataAgenda) {
             dtmAgenda.add(agen);
         }
+        // end if use hibernate connection schema
 
+        // if use traditional connection schema
         //fetchPengeluaran();
         //fetchPemasukan();
         //fetchAgenda();
+        // end if use traditional connection schema
+        
         jTablePengeluaran.setModel(dtmPengeluaran);
         jTablePemasukan.setModel(dtmPemasukan);
         jTableAgenda.setModel(dtmAgenda);
-        
+
         setSisaSaldo();
+        
+        //region menu tabel pengeluaran
+        JMenuItem updateItemPengeluaran = new JMenuItem("Perbarui Data");
+        JMenuItem deleteItemPengeluaran = new JMenuItem("Hapus");
+        
+        updateItemPengeluaran.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
+                System.out.println(jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0));
+            }
+        });
+        deleteItemPengeluaran.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
+                System.out.println(jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0));
+            }
+        });
+        
+        popupMenuPengeluaran.add(updateItemPengeluaran);
+        popupMenuPengeluaran.add(deleteItemPengeluaran);
+        jTablePengeluaran.setComponentPopupMenu(popupMenuPengeluaran);
+        
+        popupMenuPengeluaran.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int rowAtPoint = jTablePengeluaran.rowAtPoint(SwingUtilities.convertPoint(popupMenuPengeluaran, new Point(0, 0), jTablePengeluaran));
+                        if (rowAtPoint > -1) {
+                            jTablePengeluaran.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                            
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+
+        });
+        //end region menu tabel pengeluaran
+        
+        //region menu tabel pemasukan
+        JMenuItem updateItemPemasukan = new JMenuItem("Perbarui Data");
+        JMenuItem deleteItemPemasukan = new JMenuItem("Hapus");
+        
+        updateItemPemasukan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
+                System.out.println(jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0));
+            }
+        });
+        deleteItemPemasukan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
+                System.out.println(jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0));
+            }
+        });
+        
+        popupMenuPemasukan.add(updateItemPemasukan);
+        popupMenuPemasukan.add(deleteItemPemasukan);
+        jTablePemasukan.setComponentPopupMenu(popupMenuPemasukan);
+        
+        popupMenuPemasukan.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int rowAtPoint = jTablePemasukan.rowAtPoint(SwingUtilities.convertPoint(popupMenuPemasukan, new Point(0, 0), jTablePemasukan));
+                        if (rowAtPoint > -1) {
+                            jTablePemasukan.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                            
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+
+        });
+        //end region menu tabel pemasukan
+        
+        //region menu tabel agenda
+        JMenuItem updateItemAgenda = new JMenuItem("Perbarui Data");
+        JMenuItem deleteItemAgenda = new JMenuItem("Hapus");
+        
+        updateItemAgenda.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
+                System.out.println(jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0));
+            }
+        });
+        deleteItemAgenda.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
+                System.out.println(jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0));
+            }
+        });
+        
+        popupMenuAgenda.add(updateItemAgenda);
+        popupMenuAgenda.add(deleteItemAgenda);
+        jTableAgenda.setComponentPopupMenu(popupMenuAgenda);
+        
+        popupMenuAgenda.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int rowAtPoint = jTableAgenda.rowAtPoint(SwingUtilities.convertPoint(popupMenuAgenda, new Point(0, 0), jTableAgenda));
+                        if (rowAtPoint > -1) {
+                            jTableAgenda.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                            
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+
+        });
+        //end region menu tabel agenda
+        
     }
-    
+
     public final void setSisaSaldo() {
         String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
         saldo1.setText(sisaKas);
@@ -755,37 +917,37 @@ public class MoneyManager extends javax.swing.JFrame {
             String datePattern = "dd MMMM yyyy";
             SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "US"));
             String tanggal = dateFormatter.format(datePicker.getModel().getValue());
-            
+
             int nominal = Integer.parseInt(pengeluaranNominal.getText().replace(",", ""));
-            
+
             String keterangan = pengeluaranKeterangan.getText();
             String status = pengeluaranJenis.getModel().getSelectedItem().toString();
-            
+
             if (Validation.Validate(tanggal, nominal, keterangan, status)) {
-                
+
                 if (Cache.getKas() < nominal) {
                     Validation.dangerDialouge(this, "Pengeluaran anda bulan ini sudah melebihi pemasukan.!");
                     return;
                 }
-                
+
                 if ((nominal + Cache.getPengeluaran(tanggal)) > Cache.getAgenda(tanggal)) {
                     if (Validation.confirmationDialouge(this, "Pengeluaran anda melebihi anggaran " + formatter.format((nominal + Cache.getPengeluaran(tanggal)) - Cache.getAgenda(tanggal)) + ". Tetap lanjutkan.?") == JOptionPane.NO_OPTION) {
                         return;
                     }
                 }
-                
+
                 Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
-                
+
                 Session session = HibernateUtil.getSessionFactory().openSession();
                 Transaction transaction = session.beginTransaction();
                 session.saveOrUpdate(baru);
                 transaction.commit();
-                
+
                 dtmPengeluaran.add(baru);
                 setSisaSaldo();
                 Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
             }
-            
+
         } catch (NumberFormatException ex) {
             Validation.infoDialouge(this, "Nominal harus angka positif");
         }
@@ -804,17 +966,17 @@ public class MoneyManager extends javax.swing.JFrame {
         String tanggal = dateFormatter.format(datePicker2.getModel().getValue());
         int nominal = Integer.parseInt(pemasukanNominal.getText().replace(",", ""));
         String keterangan = pemasukanKeterangan.getText();
-        
+
         if (Validation.Validate(tanggal, nominal, keterangan)) {
             Pemasukan baru = new Pemasukan(Cache.user, nominal, (Date) datePicker2.getModel().getValue(), keterangan);
-            
+
             Session session = HibernateUtil.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
             transaction.commit();
-            
+
             dtmPemasukan.add(baru);
-            
+
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
         setSisaSaldo();
@@ -827,23 +989,23 @@ public class MoneyManager extends javax.swing.JFrame {
         int nominal = Integer.parseInt(agendaNominal.getText().replace(",", ""));
         String keterangan = agendaKeterangan.getText();
         String otoritas = agendaOtoritas.getModel().getSelectedItem().toString();
-        
+
         boolean authority = false;
         if (otoritas.equals("Penting")) {
             authority = true;
         }
-        
+
         if (Validation.Validate(tanggal, nominal, keterangan, otoritas)) {
-            
+
             Agenda baru = new Agenda(Cache.user, nominal, (Date) datePicker3.getModel().getValue(), keterangan, authority);
-            
+
             Session session = HibernateUtil.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
             transaction.commit();
-            
+
             dtmAgenda.add(baru);
-            
+
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
         setSisaSaldo();
@@ -855,7 +1017,7 @@ public class MoneyManager extends javax.swing.JFrame {
         agendaKeterangan.setText("");
         agendaOtoritas.setSelectedIndex(0);
     }//GEN-LAST:event_DoResetAgendaActionPerformed
-    
+
     @Override
     protected void processWindowEvent(final WindowEvent e) {
         super.processWindowEvent(e);
@@ -866,28 +1028,10 @@ public class MoneyManager extends javax.swing.JFrame {
         }
     }
 
-    /*
-     private void TableModelData() {
-     String[] columnNames = {"Id", "Name", "Department", "Email"};
-     String[][] data = {
-     {"111", "G Conger", " Orthopaedic", "jim@wheremail.com"},
-     {"222", "A Date", "ENT", "adate@somemail.com"},
-     {"333", "R Linz", "Paedriatics", "rlinz@heremail.com"},
-     {"444", "V Sethi", "Nephrology", "vsethi@whomail.com"},
-     {"555", "K Rao", "Orthopaedics", "krao@whatmail.com"},
-     {"666", "V Santana", "Nephrology", "vsan@whenmail.com"},
-     {"777", "J Pollock", "Nephrology", "jpol@domail.com"},
-     {"888", "H David", "Nephrology", "hdavid@donemail.com"},
-     {"999", "P Patel", "Nephrology", "ppatel@gomail.com"},
-     {"101", "C Comer", "Nephrology", "ccomer@whymail.com"}
-     };
-     tableModel = new DefaultTableModel(data, columnNames);
-     }
-     */
     private void fetchPengeluaran() {
         try {
             ResultSet kas = dbpengeluaran.select("select * from pengeluaran where iduser = " + Cache.user.getId());
-            
+
             while (kas.next()) {
                 Pengeluaran u = new Pengeluaran(
                         Cache.user,
@@ -902,11 +1046,11 @@ public class MoneyManager extends javax.swing.JFrame {
             Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
         }
     }
-    
+
     private void fetchPemasukan() {
         try {
             ResultSet kas = dbpemasukan.select("select * from pemasukan where iduser = " + Cache.user.getId());
-            
+
             while (kas.next()) {
                 Pemasukan u = new Pemasukan(
                         Cache.user,
@@ -920,11 +1064,11 @@ public class MoneyManager extends javax.swing.JFrame {
             Validation.infoDialouge(null, "Terjadi kesalahan saat mengeksekusi query database");
         }
     }
-    
+
     private void fetchAgenda() {
         try {
             ResultSet kas = dbagenda.select("select * from agenda where iduser = " + Cache.user.getId());
-            
+
             while (kas.next()) {
                 Agenda u = new Agenda(
                         Cache.user,
