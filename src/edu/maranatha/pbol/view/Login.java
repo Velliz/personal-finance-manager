@@ -46,18 +46,6 @@ public class Login extends javax.swing.JFrame implements ActionListener {
         initComponents();
         setLocationRelativeTo(null);
         time.start();
-
-//        JasperPrint jasperPrint = null;
-//        TableModelData();
-//        try {
-//            JasperCompileManager.compileReportToFile("report/balancesheet.jrxml");
-//            jasperPrint = JasperFillManager.fillReport("report/balancesheet.jasper", new HashMap(),
-//                    new JRTableModelDataSource(tableModel));
-//            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
-//            jasperViewer.setVisible(true);
-//        } catch (JRException ex) {
-//            ex.printStackTrace();
-//        }
     }
 
     /**

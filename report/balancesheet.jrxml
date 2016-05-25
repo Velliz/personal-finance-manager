@@ -3,10 +3,11 @@
     <property name="ireport.zoom" value="1.0"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
-    <field name="COLUMN_0" class="java.lang.String"/>
-    <field name="COLUMN_1" class="java.lang.String"/>
-    <field name="COLUMN_2" class="java.lang.String"/>
+    <field name="COLUMN_0" class="java.lang.Integer"/>
+    <field name="COLUMN_1" class="java.lang.Integer"/>
+    <field name="COLUMN_2" class="java.util.Date"/>
     <field name="COLUMN_3" class="java.lang.String"/>
+    <field name="COLUMN_4" class="java.lang.String"/>
     <pageHeader>
         <band height="30" splitType="Stretch">
             <staticText>
@@ -26,7 +27,11 @@
                 <text><![CDATA[Department]]></text>
             </staticText>
             <staticText>
-                <reportElement x="420" y="0" width="108" height="24" uuid="044a8958-4960-4fa3-9cd6-c594595c521a"/>
+                <reportElement x="210" y="0" width="54" height="24" uuid="044a8958-4960-4fa3-9cd6-c594595c521a"/>
+                <text><![CDATA[Email]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="210" y="0" width="54" height="24" uuid="044a8958-4960-4fa3-9cd6-c594595c521a"/>
                 <text><![CDATA[Email]]></text>
             </staticText>
         </band>
@@ -46,7 +51,11 @@
                 <textFieldExpression><![CDATA[$F{COLUMN_2}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="420" y="0" width="108" height="24" uuid="c3094477-bb5e-4d5c-a440-8d7c7f2a1d3e"/>
+                <reportElement x="210" y="0" width="54" height="24" uuid="c3094477-bb5e-4d5c-a440-8d7c7f2a1d3e"/>
+                <textFieldExpression><![CDATA[$F{COLUMN_3}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="210" y="0" width="54" height="24" uuid="c3094477-bb5e-4d5c-a440-8d7c7f2a1d3e"/>
                 <textFieldExpression><![CDATA[$F{COLUMN_3}]]></textFieldExpression>
             </textField>
         </band>

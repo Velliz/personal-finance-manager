@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -36,6 +37,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -167,7 +174,7 @@ public class MoneyManager extends javax.swing.JFrame {
                 Transaction transaction = session.beginTransaction();
                 session.delete(peng);
                 transaction.commit();
-                
+
                 JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus!");
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     @Override
@@ -886,6 +893,11 @@ public class MoneyManager extends javax.swing.JFrame {
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem4.setText("Cetak Laporan");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuBar1.add(jMenu2);
@@ -1047,6 +1059,28 @@ public class MoneyManager extends javax.swing.JFrame {
         agendaKeterangan.setText("");
         agendaOtoritas.setSelectedIndex(0);
     }//GEN-LAST:event_DoResetAgendaActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        switch (jTabbedPane1.getSelectedIndex()) {
+            case 0:
+                JasperPrint jasperPrint = null;
+                try {
+                    JasperCompileManager.compileReportToFile("report/balancesheet.jrxml");
+                    jasperPrint = JasperFillManager.fillReport("report/balancesheet.jasper", new HashMap(),
+                            new JRTableModelDataSource(dtmAgenda));
+                    JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+                    jasperViewer.setVisible(true);
+                } catch (JRException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case 1:
+                break;
+            case 3:
+                break;
+
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     @Override
     protected void processWindowEvent(final WindowEvent e) {
