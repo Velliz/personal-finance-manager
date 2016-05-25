@@ -5,16 +5,19 @@
  */
 package edu.maranatha.pbol.view;
 
-import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.model.pojo.Pengeluaran;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
+import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
@@ -31,15 +34,15 @@ import org.jdatepicker.impl.UtilDateModel;
  */
 public class UpdatePengeluaran extends javax.swing.JFrame {
 
-    private final JDatePickerImpl datePicker;
-    private final PengeluaranTableController dtmPengeluaran;
-
+    private JDatePickerImpl datePicker = null;
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
     private int id = 0;
+    Pengeluaran peng = null;
 
     /**
      * Creates new form UpdatePengeluaran
+     *
      * @param id
      */
     public UpdatePengeluaran(int id) {
@@ -49,25 +52,48 @@ public class UpdatePengeluaran extends javax.swing.JFrame {
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
 
-        UtilDateModel model = new UtilDateModel();
+        setSisaSaldo();
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE idpengeluaran = " + this.id).list();
+        for (Pengeluaran p : dataKeluar) {
+            this.peng = p;
+            break;
+        }
+
+        UtilDateModel model = new UtilDateModel(peng.getTanggalpengeluaran());
         Properties p = new Properties();
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
+
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
         panelDatePickerPengeluaran.setLayout(new CardLayout());
         panelDatePickerPengeluaran.add(datePicker);
 
-        dtmPengeluaran = new PengeluaranTableController();
-        setSisaSaldo();
+        pengeluaranNominal.setText(String.valueOf(peng.getNominal()));
+        pengeluaranKeterangan.setText(peng.getKeterangan());
+        pengeluaranJenis.setSelectedItem(peng.getStatus());
+
     }
 
     public final void setSisaSaldo() {
         String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
         saldo1.setText(sisaKas);
     }
-        
+
+    @Override
+    protected void processWindowEvent(final WindowEvent e) {
+        super.processWindowEvent(e);
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            new MoneyManager().setVisible(true);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,7 +119,8 @@ public class UpdatePengeluaran extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         saldo1 = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Ubah Data Pengeluaran");
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Pengeluaran"));
 
@@ -125,7 +152,7 @@ public class UpdatePengeluaran extends javax.swing.JFrame {
 
         pengeluaranJenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tersier", "Sekunder", "Primer", "Darurat" }));
 
-        DoSavePengeluaran.setText("Simpan");
+        DoSavePengeluaran.setText("Update");
         DoSavePengeluaran.setOpaque(false);
         DoSavePengeluaran.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -274,27 +301,47 @@ public class UpdatePengeluaran extends javax.swing.JFrame {
 
                 Pengeluaran baru = new Pengeluaran(Cache.user, nominal, (Date) datePicker.getModel().getValue(), keterangan, status);
                 baru.setIdpengeluaran(this.id);
-                
+
                 Session session = HibernateUtil.getSessionFactory().openSession();
                 Transaction transaction = session.beginTransaction();
                 session.saveOrUpdate(baru);
                 transaction.commit();
 
-                dtmPengeluaran.add(baru);
-                setSisaSaldo();
                 Validation.infoDialouge(this, "Data pengeluaran berhasil disimpan");
             }
 
         } catch (NumberFormatException ex) {
             Validation.infoDialouge(this, "Nominal harus angka positif");
         }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MoneyManager().setVisible(true);
+            }
+        });
+        this.dispose();
     }//GEN-LAST:event_DoSavePengeluaranActionPerformed
 
     private void DoResetPengeluaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetPengeluaranActionPerformed
-        datePicker.getModel().setValue(null);
-        pengeluaranNominal.setText("");
-        pengeluaranKeterangan.setText("");
-        pengeluaranJenis.setSelectedIndex(0);
+        UtilDateModel model = new UtilDateModel(peng.getTanggalpengeluaran());
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
+        panelDatePickerPengeluaran.removeAll();
+        panelDatePickerPengeluaran.setLayout(new CardLayout());
+        panelDatePickerPengeluaran.add(datePicker);
+        panelDatePickerPengeluaran.validate();
+
+        pengeluaranNominal.setText(String.valueOf(peng.getNominal()));
+        pengeluaranKeterangan.setText(peng.getKeterangan());
+        pengeluaranJenis.setSelectedItem(peng.getStatus());
     }//GEN-LAST:event_DoResetPengeluaranActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

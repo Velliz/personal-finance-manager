@@ -129,36 +129,60 @@ public class MoneyManager extends javax.swing.JFrame {
         //fetchPemasukan();
         //fetchAgenda();
         // end if use traditional connection schema
-        
         jTablePengeluaran.setModel(dtmPengeluaran);
         jTablePemasukan.setModel(dtmPemasukan);
         jTableAgenda.setModel(dtmAgenda);
 
         setSisaSaldo();
-        
+
         //region menu tabel pengeluaran
         JMenuItem updateItemPengeluaran = new JMenuItem("Perbarui Data");
         JMenuItem deleteItemPengeluaran = new JMenuItem("Hapus");
-        
+
         updateItemPengeluaran.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
-                System.out.println(jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0));
+                // todo : invoke UI
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new UpdatePengeluaran((int) jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0)).setVisible(true);
+                        MoneyManager.this.dispose();
+                    }
+                });
             }
         });
         deleteItemPengeluaran.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
-                System.out.println(jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0));
+                Pengeluaran peng = null;
+
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                List<Pengeluaran> dataKeluar = session.createQuery("from Pengeluaran WHERE idpengeluaran = " + jTablePengeluaran.getValueAt(jTablePengeluaran.getSelectedRow(), 0)).list();
+                for (Pengeluaran p : dataKeluar) {
+                    peng = p;
+                    break;
+                }
+
+                Transaction transaction = session.beginTransaction();
+                session.delete(peng);
+                transaction.commit();
+                
+                JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus!");
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new MoneyManager().setVisible(true);
+                    }
+                });
+                MoneyManager.this.dispose();
             }
         });
-        
+
         popupMenuPengeluaran.add(updateItemPengeluaran);
         popupMenuPengeluaran.add(deleteItemPengeluaran);
         jTablePengeluaran.setComponentPopupMenu(popupMenuPengeluaran);
-        
+
         popupMenuPengeluaran.addPopupMenuListener(new PopupMenuListener() {
 
             @Override
@@ -169,25 +193,27 @@ public class MoneyManager extends javax.swing.JFrame {
                         int rowAtPoint = jTablePengeluaran.rowAtPoint(SwingUtilities.convertPoint(popupMenuPengeluaran, new Point(0, 0), jTablePengeluaran));
                         if (rowAtPoint > -1) {
                             jTablePengeluaran.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-                            
+
                         }
                     }
                 });
             }
 
             @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
 
             @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {}
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
 
         });
         //end region menu tabel pengeluaran
-        
+
         //region menu tabel pemasukan
         JMenuItem updateItemPemasukan = new JMenuItem("Perbarui Data");
         JMenuItem deleteItemPemasukan = new JMenuItem("Hapus");
-        
+
         updateItemPemasukan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -202,11 +228,11 @@ public class MoneyManager extends javax.swing.JFrame {
                 System.out.println(jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0));
             }
         });
-        
+
         popupMenuPemasukan.add(updateItemPemasukan);
         popupMenuPemasukan.add(deleteItemPemasukan);
         jTablePemasukan.setComponentPopupMenu(popupMenuPemasukan);
-        
+
         popupMenuPemasukan.addPopupMenuListener(new PopupMenuListener() {
 
             @Override
@@ -217,25 +243,27 @@ public class MoneyManager extends javax.swing.JFrame {
                         int rowAtPoint = jTablePemasukan.rowAtPoint(SwingUtilities.convertPoint(popupMenuPemasukan, new Point(0, 0), jTablePemasukan));
                         if (rowAtPoint > -1) {
                             jTablePemasukan.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-                            
+
                         }
                     }
                 });
             }
 
             @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
 
             @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {}
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
 
         });
         //end region menu tabel pemasukan
-        
+
         //region menu tabel agenda
         JMenuItem updateItemAgenda = new JMenuItem("Perbarui Data");
         JMenuItem deleteItemAgenda = new JMenuItem("Hapus");
-        
+
         updateItemAgenda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,11 +278,11 @@ public class MoneyManager extends javax.swing.JFrame {
                 System.out.println(jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0));
             }
         });
-        
+
         popupMenuAgenda.add(updateItemAgenda);
         popupMenuAgenda.add(deleteItemAgenda);
         jTableAgenda.setComponentPopupMenu(popupMenuAgenda);
-        
+
         popupMenuAgenda.addPopupMenuListener(new PopupMenuListener() {
 
             @Override
@@ -265,21 +293,23 @@ public class MoneyManager extends javax.swing.JFrame {
                         int rowAtPoint = jTableAgenda.rowAtPoint(SwingUtilities.convertPoint(popupMenuAgenda, new Point(0, 0), jTableAgenda));
                         if (rowAtPoint > -1) {
                             jTableAgenda.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-                            
+
                         }
                     }
                 });
             }
 
             @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
 
             @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {}
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
 
         });
         //end region menu tabel agenda
-        
+
     }
 
     public final void setSisaSaldo() {
