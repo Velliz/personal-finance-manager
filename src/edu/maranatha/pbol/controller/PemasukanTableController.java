@@ -76,4 +76,9 @@ public class PemasukanTableController extends MoneyManagerTableModel {
         data.add((Pemasukan) element);
         fireTableRowsInserted(data.size() - 1, data.size() - 1);
     }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
 }

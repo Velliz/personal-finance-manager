@@ -6,8 +6,6 @@
 package edu.maranatha.pbol.view;
 
 import edu.maranatha.pbol.controller.AgendaTableController;
-import edu.maranatha.pbol.controller.PemasukanTableController;
-import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.model.pojo.Agenda;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
@@ -17,6 +15,7 @@ import java.awt.CardLayout;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
@@ -34,13 +33,15 @@ public class UpdateAgenda extends javax.swing.JFrame {
 
     private final JDatePickerImpl datePicker3;
     private final AgendaTableController dtmAgenda;
-    
+
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-    
+
     private int id = 0;
-            
+    Agenda agn = null;
+
     /**
      * Creates new form UpdateAgenda
+     *
      * @param id
      */
     public UpdateAgenda(int id) {
@@ -48,21 +49,41 @@ public class UpdateAgenda extends javax.swing.JFrame {
         initComponents();
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
-        
-        UtilDateModel model3 = new UtilDateModel();
-        Properties p3 = new Properties();
-        p3.put("text.today", "Today");
-        p3.put("text.month", "Month");
-        p3.put("text.year", "Year");
-        JDatePanelImpl datePanel3 = new JDatePanelImpl(model3, p3);
-        datePicker3 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
-        panelDatePickerAgenda.setLayout(new CardLayout());
-        panelDatePickerAgenda.add(datePicker3);
 
         dtmAgenda = new AgendaTableController();
         setSisaSaldo();
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<Agenda> dataAgenda = session.createQuery("from Agenda WHERE idagenda = " + this.id).list();
+        for (Agenda a : dataAgenda) {
+            this.agn = a;
+            break;
+        }
+
+        UtilDateModel model = new UtilDateModel(agn.getTanggal());
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+
+        datePicker3 = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
+        panelDatePickerAgenda.setLayout(new CardLayout());
+        panelDatePickerAgenda.add(datePicker3);
+
+        agendaNominal.setText(String.valueOf(agn.getNominalanggaran()));
+        agendaKeterangan.setText(agn.getKeterangan());
+        if (agn.isOtoritas()) {
+            agendaOtoritas.setSelectedIndex(0);
+        } else {
+            agendaOtoritas.setSelectedIndex(1);
+        }
+
     }
-    
+
     public final void setSisaSaldo() {
         String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
         saldo3.setText(sisaKas);
@@ -266,7 +287,7 @@ public class UpdateAgenda extends javax.swing.JFrame {
 
             Agenda baru = new Agenda(Cache.user, nominal, (Date) datePicker3.getModel().getValue(), keterangan, authority);
             baru.setIdagenda(this.id);
-            
+
             Session session = HibernateUtil.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(baru);
@@ -276,7 +297,13 @@ public class UpdateAgenda extends javax.swing.JFrame {
 
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
-        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MoneyManager().setVisible(true);
+            }
+        });
+        this.dispose();
     }//GEN-LAST:event_DoSimpanAgendaActionPerformed
 
     private void DoResetAgendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetAgendaActionPerformed

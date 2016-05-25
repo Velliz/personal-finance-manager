@@ -125,5 +125,5 @@ public class MoneyManagerTableModel extends AbstractTableModel {
     public int getRowCount() {
         return columns.size();
     }
-
+    
 }

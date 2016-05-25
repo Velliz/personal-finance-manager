@@ -231,15 +231,40 @@ public class MoneyManager extends javax.swing.JFrame {
         updateItemPemasukan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
-                System.out.println(jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0));
+                // todo : invoke UI
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new UpdatePemasukan((int) jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0)).setVisible(true);
+                        MoneyManager.this.dispose();
+                    }
+                });
             }
         });
         deleteItemPemasukan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
-                System.out.println(jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0));
+                Pemasukan pem = null;
+
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan WHERE idpemasukan = " + jTablePemasukan.getValueAt(jTablePemasukan.getSelectedRow(), 0)).list();
+                for (Pemasukan p : dataMasuk) {
+                    pem = p;
+                    break;
+                }
+
+                Transaction transaction = session.beginTransaction();
+                session.delete(pem);
+                transaction.commit();
+
+                JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus!");
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new MoneyManager().setVisible(true);
+                    }
+                });
+                MoneyManager.this.dispose();
             }
         });
 
@@ -281,15 +306,40 @@ public class MoneyManager extends javax.swing.JFrame {
         updateItemAgenda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose UPDATE");
-                System.out.println(jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0));
+                // todo : invoke UI
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new UpdateAgenda((int) jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0)).setVisible(true);
+                        MoneyManager.this.dispose();
+                    }
+                });
             }
         });
         deleteItemAgenda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Right-click performed on table and choose DELETE");
-                System.out.println(jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0));
+                Agenda agd = null;
+
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                List<Agenda> dataAgenda = session.createQuery("from Agenda WHERE idagenda = " + jTableAgenda.getValueAt(jTableAgenda.getSelectedRow(), 0)).list();
+                for (Agenda a : dataAgenda) {
+                    agd = a;
+                    break;
+                }
+
+                Transaction transaction = session.beginTransaction();
+                session.delete(agd);
+                transaction.commit();
+
+                JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus!");
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new MoneyManager().setVisible(true);
+                    }
+                });
+                MoneyManager.this.dispose();
             }
         });
 
@@ -825,7 +875,15 @@ public class MoneyManager extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane6.setViewportView(jTableAgenda);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

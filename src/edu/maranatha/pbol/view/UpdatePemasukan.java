@@ -8,14 +8,17 @@ package edu.maranatha.pbol.view;
 import edu.maranatha.pbol.controller.PemasukanTableController;
 import edu.maranatha.pbol.controller.PengeluaranTableController;
 import edu.maranatha.pbol.model.pojo.Pemasukan;
+import edu.maranatha.pbol.model.pojo.Pengeluaran;
 import edu.maranatha.pbol.presistence.HibernateUtil;
 import edu.maranatha.pbol.util.Cache;
 import edu.maranatha.pbol.util.DateLabelFormatter;
 import edu.maranatha.pbol.util.Validation;
 import java.awt.CardLayout;
+import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import javax.swing.ImageIcon;
@@ -37,9 +40,11 @@ public class UpdatePemasukan extends javax.swing.JFrame {
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
     private int id = 0;
+    Pemasukan pem = null;
 
     /**
      * Creates new form UpdatePemasukan
+     *
      * @param id
      */
     public UpdatePemasukan(int id) {
@@ -49,23 +54,45 @@ public class UpdatePemasukan extends javax.swing.JFrame {
         setIconImage(new ImageIcon("money.png").getImage());
         setLocationRelativeTo(null);
 
-        UtilDateModel model2 = new UtilDateModel();
-        Properties p2 = new Properties();
-        p2.put("text.today", "Today");
-        p2.put("text.month", "Month");
-        p2.put("text.year", "Year");
-        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
-        datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        dtmPemasukan = new PemasukanTableController();
+        setSisaSaldo();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<Pemasukan> dataMasuk = session.createQuery("from Pemasukan WHERE idpemasukan = " + this.id).list();
+        for (Pemasukan p : dataMasuk) {
+            this.pem = p;
+            break;
+        }
+
+        UtilDateModel model = new UtilDateModel(pem.getTanggalpemasukan());
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+
+        datePicker2 = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
         panelDatePickerPemasukan.setLayout(new CardLayout());
         panelDatePickerPemasukan.add(datePicker2);
 
-        dtmPemasukan = new PemasukanTableController();
-        setSisaSaldo();
+        pemasukanNominal.setText(String.valueOf(pem.getNominal()));
+        pemasukanKeterangan.setText(pem.getKeterangan());
+
     }
 
     public final void setSisaSaldo() {
         String sisaKas = String.valueOf(formatter.format(Cache.getKas()));
         saldo2.setText(sisaKas);
+    }
+    
+        @Override
+    protected void processWindowEvent(final WindowEvent e) {
+        super.processWindowEvent(e);
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            new MoneyManager().setVisible(true);
+        }
     }
 
     /**
@@ -174,7 +201,7 @@ public class UpdatePemasukan extends javax.swing.JFrame {
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                             .addComponent(panelDatePickerPemasukan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pemasukanNominal))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 43, Short.MAX_VALUE))
                     .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -255,7 +282,13 @@ public class UpdatePemasukan extends javax.swing.JFrame {
 
             Validation.infoDialouge(this, "Data pemasukan berhasil disimpan");
         }
-        setSisaSaldo();
+          java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MoneyManager().setVisible(true);
+            }
+        });
+        this.dispose();
     }//GEN-LAST:event_DoSimpanPemasukanActionPerformed
 
     private void DoResetPemasukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DoResetPemasukanActionPerformed

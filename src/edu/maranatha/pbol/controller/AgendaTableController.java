@@ -24,7 +24,7 @@ public class AgendaTableController extends MoneyManagerTableModel {
     private final List<Agenda> data = new ArrayList<>();
     NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
-        public final Column idColumn = new Column("ID", Integer.class) {
+    public final Column idColumn = new Column("ID", Integer.class) {
 
         @Override
         public Object get(int row) {
@@ -81,7 +81,12 @@ public class AgendaTableController extends MoneyManagerTableModel {
 
     public void add(Object element) {
         Objects.requireNonNull(element);
-        data.add((Agenda)element);
+        data.add((Agenda) element);
         fireTableRowsInserted(data.size() - 1, data.size() - 1);
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
     }
 }
