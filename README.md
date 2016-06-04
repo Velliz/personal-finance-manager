@@ -10,12 +10,14 @@ You can use this app for:
 * Custom date picker
 * Custom object table model
 * Themes by synthetica
+* Print income, outcome, agenda data
 
 # Limitations
 * Current version only support currency Rp. (Rupiah)
 
 # Thanks
 `synthetica for custom themes`
+`iReport for export data`
 
 # Teams
 * Didit Velliz
